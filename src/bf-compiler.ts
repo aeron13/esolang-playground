@@ -18,7 +18,7 @@ type CompiledProgram = string[] | string
 class Compiler {
 
     code: string
-    private tokens = ['+', '-', '.', ',', '<', '>' ]
+    static tokens = ['+', '-', '.', ',', '<', '>' ]
     public program: CompiledProgram[]
 
     constructor(code: string) {
@@ -33,7 +33,7 @@ class Compiler {
 
             const char = this.code[i];
 
-            if (this.tokens.includes(char)) {
+            if (Compiler.tokens.includes(char)) {
                 stack[stack.length - 1].push(char)
             } else if (char === '[') {
                 const newArray: CompiledProgram = []
