@@ -8,8 +8,7 @@ const exampleProgram = `+++++ +++++
 > +++ .
 > +++++ .
 > +++++ ++++ .
-
-> +++++ +++++ .`
+`
 
 type CompiledProgram = string[] | string
 
