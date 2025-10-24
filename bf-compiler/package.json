@@ -1,7 +1,12 @@
 {
+  "name": "bf-compiler",
+  "version": "1.0.0",
+  "description": "Brainfuck / TypeScript transpiler",
+  "main": "dist/bf-compiler.js",
+  "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsc -p tsconfig.json && RESULT=$(node dist/bf-compiler.js) && echo \"Expected: CIAO \nResult: $RESULT\n\" && if [[ \"$RESULT\" == \"CIAO\" ]]; then echo \"Test passed\"; else echo \"Test failed\"; fi"
+    "test": "tsc -p tsconfig.json && node ./dist/test"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

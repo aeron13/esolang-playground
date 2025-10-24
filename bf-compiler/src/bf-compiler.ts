@@ -1,22 +1,11 @@
-const exampleProgram = `+++++ +++++
-[> +++++ +
- > +++++ ++
- > +++++ +
- > +++++ ++
- <<<< -]
-> +++++ ++ .
-> +++ .
-> +++++ .
-> +++++ ++++ .
-`
 
 type ASTreeContent = string[] | string
 type ASTree = ASTreeContent[]
 
-class Compiler {
+export default class Compiler {
 
     // 1. parse tokens, remove chars that are useless, put tokens into an array
-    // - code within a loop must be saved in a nested array, so that they are executed 
+    // - code within a loop must be saved in a nested array
 
     code: string
     static tokens = ['+', '-', '.', ',', '<', '>' ]
@@ -133,6 +122,3 @@ class Compiler {
         })
     }
 }
-
-const compiler = new Compiler(exampleProgram);
-console.log(compiler.output.join(''))
