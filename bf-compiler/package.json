@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.json && RESULT=$(node dist/bf-compiler.js) && echo \"Expected: CIAO \nResult: $RESULT\n\" && if [[ \"$RESULT\" == \"CIAO\" ]]; then echo \"Test passed\"; else echo \"Test failed\"; fi"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
