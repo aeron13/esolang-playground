@@ -10,7 +10,8 @@ const exampleProgram = `+++++ +++++
 > +++++ ++++ .
 `
 
-type CompiledProgram = string[] | string
+type ASTreeContent = string[] | string
+type ASTree = ASTreeContent[]
 
 // 1. parse tokens, remove chars that are useless, put tokens into an array
 // - code within a loop must be saved in a nested array, so that they are executed 
@@ -19,7 +20,7 @@ class Compiler {
 
     code: string
     static tokens = ['+', '-', '.', ',', '<', '>' ]
-    public program: CompiledProgram[]
+    public program: ASTree
 
     constructor(code: string) {
         this.code = code
@@ -27,7 +28,7 @@ class Compiler {
     }
 
     public parse = () => {
-        const stack: CompiledProgram[][] = [[]];
+        const stack: ASTree[] = [[]];
     
         for(let i = 0; i <this.code.length; i++) {
 
@@ -36,7 +37,7 @@ class Compiler {
             if (Compiler.tokens.includes(char)) {
                 stack[stack.length - 1].push(char)
             } else if (char === '[') {
-                const newArray: CompiledProgram = []
+                const newArray: ASTreeContent = []
                 stack[stack.length - 1].push(newArray)
                 stack.push(newArray)
             } else if (char === ']') {
@@ -71,9 +72,9 @@ class Runner {
     private memory: number[] = []
     private memoryPointer: number = 0
 
-    program: CompiledProgram[]
+    program: ASTree
 
-    constructor(program: CompiledProgram[], inputString: string | null = null) {
+    constructor(program: ASTree, inputString: string | null = null) {
         this.input = inputString?.split('') ?? []
         this.program = program
         
@@ -94,7 +95,7 @@ class Runner {
         this.innerRun(this.program)
     }
 
-    private innerRun = (program: CompiledProgram[]) => {
+    private innerRun = (program: ASTree) => {
 
         program.forEach(token => {
 
