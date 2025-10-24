@@ -13,18 +13,40 @@ const exampleProgram = `+++++ +++++
 type ASTreeContent = string[] | string
 type ASTree = ASTreeContent[]
 
-// 1. parse tokens, remove chars that are useless, put tokens into an array
-// - code within a loop must be saved in a nested array, so that they are executed 
-
 class Compiler {
+
+    // 1. parse tokens, remove chars that are useless, put tokens into an array
+    // - code within a loop must be saved in a nested array, so that they are executed 
 
     code: string
     static tokens = ['+', '-', '.', ',', '<', '>' ]
     public program: ASTree
 
-    constructor(code: string) {
+    // 2. execute the code:
+    // - the memory is an array of zeroes.
+    // - there is a memory pointer , which is initialized as 0
+    // - there is an input array/string
+    // - there is a output array/string
+    // - for every token: increase the current pointer
+
+    input: string[] = []
+    output: string[] = []
+
+    static memorySize = 10
+    private memory: number[] = []
+    private memoryPointer: number = 0
+
+    constructor(code: string, inputString: string | null = null) {
         this.code = code
+        this.input = inputString?.split('') ?? []
+
         this.parse()
+
+        for (let i = 0; i < Compiler.memorySize; i++) {
+            this.memory.push(0)
+        }
+
+        this.run()
     }
 
     public parse = () => {
@@ -53,34 +75,6 @@ class Compiler {
         }
         
         this.program = stack[0]
-    }
-}
-
-// 2. execute the code:
-// - the memory is an array of zeroes.
-// - there is a memory pointer , which is initialized as 0
-// - there is an input array/string
-// - there is a output array/string
-// - for every token: increase the current pointer
-
-class Runner {
-    
-    input: string[] = []
-    output: string[] = []
-
-    static memorySize = 10
-    private memory: number[] = []
-    private memoryPointer: number = 0
-
-    program: ASTree
-
-    constructor(program: ASTree, inputString: string | null = null) {
-        this.input = inputString?.split('') ?? []
-        this.program = program
-        
-        for (let i = 0; i < Runner.memorySize; i++) {
-            this.memory.push(0)
-        }
     }
 
     get currentCell() { 
@@ -140,9 +134,5 @@ class Runner {
     }
 }
 
-
 const compiler = new Compiler(exampleProgram);
-const program = compiler.program
-const runner = new Runner(program)
-runner.run()
-console.log(runner.output)
+console.log(compiler.output.join(''))
