@@ -5,7 +5,7 @@
             { title: 'Run' }
             ]">
             <template #tab1>
-                <textarea></textarea>
+                <Code></Code>
             </template>
             <template #tab2>
                 <div>

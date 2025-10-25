@@ -4,7 +4,7 @@
             <button 
                 v-for="tab, index in tabs" :key="index" 
                 type="button" 
-                class="border-green-300 border rounded-t-[8px] pt-1 px-4 pb-2 tab-button relative"
+                class="border-green-300 border rounded-t-[8px] pt-1 px-4 pb-2 tab-button relative font-medium text-[14px]"
                 :class="index === activeTab && 'bg-[#352E36]'"
                 :style="`z-index: ${index === activeTab ? 1 : 0}`"
                 @click="activeTab = index"

@@ -35,7 +35,8 @@ export default {
       },
       boxShadow: {
         "button-dark": "4px 4px 0 0 rgba(196, 188, 255, 1)",
-        "button-2-dark": "4px 4px 0 0 rgba(196, 188, 255, 0.5)" 
+        "button-2-dark": "4px 4px 0 0 rgba(196, 188, 255, 0.5)",
+        "button-keyboard": "4px 4px 0 0 rgba(15, 195, 70, 0.5)"
       }
     }
   },
