@@ -1,15 +1,20 @@
 <template>
-    <div class="w-full">
-        <div class="bg-dark-900 w-full h-[330px] rounded-sm p-2">
-            <code class="font-semibold text-base inline-block font-sans tracking-wider">
+    <div class="w-full h-full flex flex-col">
+        <div class="bg-dark-900 w-full flex-grow rounded-sm p-2">
+            <code class="font-semibold h-full text-base inline-block font-sans tracking-wider">
                 <span v-html="codeHtml.join('')"></span>
                 <UiCursor :user-typing="userTyping" />
             </code>
         </div>
-        <div class="px-5 pt-4">
+        <div class="flex justify-between items-center pt-4 px-5">
+            <button type="button" class="underline text-sm font-semibold" @click="showAsciiChart = true">ascii chart</button>
+            <UiButtonBig text="Run >" />
+        </div>
+        <div class="px-5 pt-6 pb-4">
             <UiKeyboard @click="handleClick"></UiKeyboard>
         </div>
     </div>
+    <AsciiChart v-show="showAsciiChart" @close="showAsciiChart = false"></AsciiChart>
 </template>
 <script setup lang="ts">
 
@@ -17,6 +22,8 @@
     const codeHtml = ref<string[]>([])
     const userTyping = ref<boolean>(false)
     const typingTimeout = ref()
+
+    const showAsciiChart = ref(false)
 
     const handleClick = (char: string) => {
 

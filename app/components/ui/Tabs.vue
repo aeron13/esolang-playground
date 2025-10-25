@@ -13,7 +13,7 @@
             </button>
         </div>
         <div class="flex-grow border border-green-300 rounded-[4px] bg-dark-700 -mt-1 p-1" :style="`z-index: ${tabs.length + 1}`">
-            <div v-for="tab, index in tabs" :key="index" v-show="activeTab === index">
+            <div v-for="tab, index in tabs" :key="index" v-show="activeTab === index" class="w-full h-full">
                 <slot :name="`tab${index+1}`"></slot>
             </div>
         </div>
