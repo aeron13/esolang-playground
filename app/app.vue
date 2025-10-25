@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-screen flex flex-col">
+  <div class="w-full h-screen flex flex-col max-w-[720px] mx-auto">
     <Header></Header>
     <main class="flex-grow">
       <NuxtPage />

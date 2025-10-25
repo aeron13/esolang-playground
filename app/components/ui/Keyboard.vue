@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-1">
+    <div class="max-w-[420px] flex flex-col gap-1">
         <div class="grid grid-cols-4 gap-1">
             <UiKeyboardButton char="." @click="$emit('click', '.')"></UiKeyboardButton>
             <UiKeyboardButton char="," @click="$emit('click', ',')"></UiKeyboardButton>

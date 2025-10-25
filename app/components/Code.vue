@@ -11,7 +11,7 @@
             <UiButtonBig text="Run >" />
         </div>
         <div class="px-5 pt-6 pb-4">
-            <UiKeyboard @click="handleClick"></UiKeyboard>
+            <UiKeyboard @click="handleClick" class="mx-auto"></UiKeyboard>
         </div>
     </div>
     <AsciiChart v-show="showAsciiChart" @close="showAsciiChart = false"></AsciiChart>
