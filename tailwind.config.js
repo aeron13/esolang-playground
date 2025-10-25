@@ -26,6 +26,7 @@ export default {
         "green-300": "#AAE4B0",
         "green-100": "#ECFFEC",
         "grey-100": "#F1F1F1",
+        "grey-400": "#969696",
         "dark-700": "#423A44",
         "dark-900": "#131313",
         "orange-code": "#FF6600",
@@ -37,7 +38,7 @@ export default {
         "button-dark": "4px 4px 0 0 rgba(196, 188, 255, 1)",
         "button-2-dark": "4px 4px 0 0 rgba(196, 188, 255, 0.5)",
         "button-keyboard": "4px 4px 0 0 rgba(15, 195, 70, 0.5)"
-      }
+      },
     }
   },
   plugins: [],

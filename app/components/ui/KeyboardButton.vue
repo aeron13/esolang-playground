@@ -9,6 +9,7 @@
         </span>
     </button>
 </template>
+
 <script setup lang="ts">
     defineProps({
         char: {type: String, required: true}
@@ -16,3 +17,11 @@
 
     defineEmits(['click'])
 </script>
+
+<style scoped>
+button {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+</style>

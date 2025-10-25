@@ -14,11 +14,36 @@
         </div>
         <div class="flex gap-1 h-[48px]">
             <UiKeyboardButton char="del" @click="$emit('click', 'del')"></UiKeyboardButton>
-            <UiKeyboardButton char=" " @click="$emit('click', ' ')" class="flex-grow"></UiKeyboardButton>
+            <UiKeyboardButton char=" " @click="$emit('click', 'SPACE')" class="flex-grow"></UiKeyboardButton>
             <UiKeyboardButton char="\n" @click="$emit('click', '\n')"></UiKeyboardButton>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-    defineEmits(['click'])
+
+    const emit = defineEmits(['click'])
+    const keydownListener = ref()
+
+    onMounted(() => {
+        keydownListener.value = window.addEventListener('keydown', (e: KeyboardEvent) => {
+            switch (e.code) {
+                case 'Backspace':
+                    emit('click', 'del');
+                break;
+                case 'Space':
+                    emit('click', 'SPACE');
+                break;
+                case 'Enter':
+                    emit('click', '\n');
+                break;
+                default:
+                    emit('click', e.key)
+                break;
+            }
+        })
+    })
+
+    onBeforeUnmount(() => {
+        window.removeEventListener('keydown', keydownListener.value)
+    })
 </script>
