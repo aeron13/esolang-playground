@@ -2,7 +2,7 @@
     <div class="w-full h-full flex flex-col">
         <div class="bg-dark-900 w-full flex-grow rounded-sm p-2">
             <code class="font-semibold h-full text-base inline-block font-sans tracking-wider">
-                <span v-html="codeHtml.join('')"></span>
+                <span v-html="store.codeHtml.join('')"></span>
                 <UiCursor :user-typing="userTyping" />
             </code>
         </div>
@@ -17,12 +17,11 @@
     <AsciiChart v-show="showAsciiChart" @close="showAsciiChart = false"></AsciiChart>
 </template>
 <script setup lang="ts">
+    import { useBfStore } from '~/store/bfStore'
 
-    const code = ref<string>('')
-    const codeHtml = ref<string[]>([])
+    const store = useBfStore()
     const userTyping = ref<boolean>(false)
     const typingTimeout = ref()
-
     const showAsciiChart = ref(false)
 
     const handleClick = (char: string) => {
@@ -35,34 +34,34 @@
 
         switch (char) {
             case 'del':
-                code.value = code.value.slice(0, -1)
-                codeHtml.value.pop()
+                store.code = store.code?.slice(0, -1) ?? ''
+                store.codeHtml.pop() 
             break;
             case '\n':
-                codeHtml.value.push('<br>');
+                store.codeHtml.push('<br>');
             break;
             case 'SPACE':
-                codeHtml.value.push('&nbsp;');
+                store.codeHtml.push('&nbsp;');
             break;
             case '+':
             case '-':
-                code.value += char
-                codeHtml.value.push(`<span class="text-orange-code">${char}</span>`)
+                store.code += char
+                store.codeHtml.push(`<span class="text-orange-code">${char}</span>`)
             break;
             case '.':
             case ',':
-                code.value += char
-                codeHtml.value.push(`<span class="text-fuchsia-code">${char}</span>`) 
+                store.code += char
+                store.codeHtml.push(`<span class="text-fuchsia-code">${char}</span>`) 
             break;
             case '[':
             case ']':
             case '>':
             case '<':
-                code.value += char
-                codeHtml.value.push(`<span class="text-blue-code">${char}</span>`)
+                store.code += char
+                store.codeHtml.push(`<span class="text-blue-code">${char}</span>`)
             break;
             default:
-                codeHtml.value.push(`<span class="text-grey-400">${char}</span>`)
+                store.codeHtml.push(`<span class="text-grey-400">${char}</span>`)
             break;
         }
     }
