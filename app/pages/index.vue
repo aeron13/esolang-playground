@@ -8,9 +8,7 @@
                 <Code></Code>
             </template>
             <template #tab2>
-                <div>
-                    Run
-                </div>
+                <Run></Run>
             </template>
         </UiTabs>
     </div>
