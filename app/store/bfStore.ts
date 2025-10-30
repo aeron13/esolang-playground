@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import type { ICodeStore } from '~/types'
+import type { IBfCodeStore } from '~/types'
 
 export const useBfStore = defineStore('bf', {
-    state: (): ICodeStore => ({
+    state: (): IBfCodeStore => ({
         code: null,
         codeHtml: []
     })
