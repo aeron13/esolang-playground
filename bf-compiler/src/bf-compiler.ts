@@ -23,16 +23,15 @@ export default class Compiler implements ICompiler {
     public memory: number[] = []
     public memoryPointer: number = 0
 
-    constructor(code: string, inputString: string | null = null) {
+    constructor(code: string) {
         this.code = code
-        this.input = inputString?.split('') ?? []
-
         for (let i = 0; i < Compiler.memorySize; i++) {
             this.memory.push(0)
         }
     }
     
-    public compile = () => {
+    public compile = (inputString: string | null = null) => {
+        this.input = inputString?.split('') ?? []
         this.clean()
         this.parse()
         this.run()
@@ -129,6 +128,7 @@ export default class Compiler implements ICompiler {
         while (this.output.length > 0) {
             this.output.pop()
         }
+        this.memoryPointer = 0
     }
 
 }

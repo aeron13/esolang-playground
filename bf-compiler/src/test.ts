@@ -18,17 +18,17 @@ class Test {
 
     public run() {
         console.log(this.description)
-        const compiler = new Compiler(this.program, this.input)
-        compiler.compile()
+        const compiler = new Compiler(this.program)
+        compiler.compile(this.input)
         this.output = compiler.output?.join('')
 
-        console.log(`Expected: ${this.expectedResult} \nResult: ${this.output} \n`)
+        console.log(`Expected: ${this.expectedResult} \nResult: ${this.output}`)
         this.passed = this.expectedResult === this.output
 
         if (this.passed) {
-            console.log('\x1b[32m%s\x1b[0m', 'Test passed')
+            console.log('\x1b[32m%s\x1b[0m', 'Test passed\n')
         } else {
-            console.log('\x1b[31m%s\x1b[0m', 'Test failed')
+            console.log('\x1b[31m%s\x1b[0m', 'Test failed\n')
         }
     }
 

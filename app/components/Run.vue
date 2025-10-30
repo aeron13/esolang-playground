@@ -20,7 +20,7 @@
             </div>
             <div class="mt-5">
                 <label for="" class="block mb-2">Input</label>
-                <input type="text" id="" class="block bg-dark-900 w-full p-2" v-model="input" />
+                <input type="text" id="" class="block bg-dark-900 w-full p-2" v-model="store.input" />
             </div>
             <div class="mt-5">
                 <label class="block mb-2">Output</label>
@@ -40,31 +40,31 @@ import type { ICompiler } from '~~/bf-compiler/src/compiler'
 
 const store = useBfStore()
 const compiler = ref<ICompiler>()
+const code = computed(() => {
+    return store.code
+})
 const memory = computed(() => {
     return compiler.value?.memory
 })
 
-const code = computed(() => store.code)
-const input = ref<string>()
 const error = ref<string>()
 
+
+onMounted(() => {
+    compiler.value = new Compiler(code.value ?? '')
+})
+
 watch(code, () => {
-    compiler.value = new Compiler(store.code ?? '', store.input)
+    compiler.value = new Compiler(code.value ?? '')
 })
-
-watch(input, () => {
-    compiler.value = new Compiler(store.code ?? '', store.input)
-})
-
 
 const compile = () => {
-    // compiler.value = new Compiler(store.code ?? '', store.input)
+    error.value = ''
     try {
-        compiler.value?.compile()
+        compiler.value?.compile(store.input)
     } catch(e) {
         error.value = e as string
     }
-    // console.log('compiling', memory.value)
     nextTick(() => {
         store.output = compiler.value?.output.join('')
     })

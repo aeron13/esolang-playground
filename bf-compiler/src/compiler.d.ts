@@ -8,7 +8,7 @@ export interface ICompiler {
     output: string[]
     memory: number[]
     memoryPointer: number
-    compile: () => void
+    compile: (inputString?: string|null) => void
     parse: () => void
     run: () => void
     clean: () => void
