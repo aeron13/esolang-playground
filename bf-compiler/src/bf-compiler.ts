@@ -20,19 +20,21 @@ export default class Compiler implements ICompiler {
     output: string[] = []
 
     static memorySize = 10
-    private memory: number[] = []
-    private memoryPointer: number = 0
+    public memory: number[] = []
+    public memoryPointer: number = 0
 
     constructor(code: string, inputString: string | null = null) {
         this.code = code
         this.input = inputString?.split('') ?? []
 
-        this.parse()
-
         for (let i = 0; i < Compiler.memorySize; i++) {
             this.memory.push(0)
         }
-
+    }
+    
+    public compile = () => {
+        this.clean()
+        this.parse()
         this.run()
     }
 
@@ -119,4 +121,12 @@ export default class Compiler implements ICompiler {
             }
         })
     }
+
+    public clean = () => {
+        this.memory.forEach(cell => cell = 0)
+        while (this.output.length > 0) {
+            this.output.pop()
+        }
+    }
+
 }
