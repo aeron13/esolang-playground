@@ -123,7 +123,9 @@ export default class Compiler implements ICompiler {
     }
 
     public clean = () => {
-        this.memory.forEach(cell => cell = 0)
+        for (let i = 0; i < this.memory.length; i++) {
+            this.memory[i] = 0
+        }
         while (this.output.length > 0) {
             this.output.pop()
         }

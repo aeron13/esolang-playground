@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-full">
-        <div class="bg-dark-900/50 w-full h-[330px] max-h-[50%] rounded-sm p-2">
+        <div class="bg-dark-900/50 w-full h-[330px] max-h-[50%] rounded-sm p-2 overflow-scroll">
             <code v-html="store.codeHtml?.join('')" class="font-semibold text-base inline-block font-sans tracking-wider">
             </code>
         </div>
@@ -15,14 +15,17 @@
                 <UiButtonSmall text="Pause" :priority="2" />
                 <UiButtonSmall text="Stop" :priority="2" />
             </div>
+            <div v-if="error" class="text-orange-code mt-2">
+                {{ error }}
+            </div>
             <div class="mt-5">
                 <label for="" class="block mb-2">Input</label>
-                <input type="text" id="" class="block bg-dark-900 w-full p-2" v-model="store.input" />
+                <input type="text" id="" class="block bg-dark-900 w-full p-2" v-model="input" />
             </div>
             <div class="mt-5">
                 <label class="block mb-2">Output</label>
                 <div id="" class="block bg-dark-900 w-full p-2">
-                    <p class="h-[1em]">
+                    <p class="min-h-[1em] block">
                         {{ store.output }}
                     </p>
                 </div>
@@ -41,13 +44,27 @@ const memory = computed(() => {
     return compiler.value?.memory
 })
 
-onBeforeMount(() => {
+const code = computed(() => store.code)
+const input = ref<string>()
+const error = ref<string>()
+
+watch(code, () => {
     compiler.value = new Compiler(store.code ?? '', store.input)
 })
 
-const compile = () => {
+watch(input, () => {
     compiler.value = new Compiler(store.code ?? '', store.input)
-    compiler.value?.compile()
+})
+
+
+const compile = () => {
+    // compiler.value = new Compiler(store.code ?? '', store.input)
+    try {
+        compiler.value?.compile()
+    } catch(e) {
+        error.value = e as string
+    }
+    // console.log('compiling', memory.value)
     nextTick(() => {
         store.output = compiler.value?.output.join('')
     })
