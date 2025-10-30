@@ -19,7 +19,7 @@ export default class Compiler implements ICompiler {
     input: string[] = []
     output: string[] = []
 
-    static memorySize = 10
+    static memorySize = 18
     public memory: number[] = []
     public memoryPointer: number = 0
 

@@ -11,9 +11,9 @@
                 </div>
             </div>
             <div class="flex gap-3">
-                <UiButtonSmall text="Run" @click="compile" />
-                <UiButtonSmall text="Pause" :priority="2" />
-                <UiButtonSmall text="Stop" :priority="2" />
+                <UiButtonBig text="Run >" @click="runCode" />
+                <UiButtonBig text="Pause" :priority="2" />
+                <UiButtonBig text="Stop" :priority="2" />
             </div>
             <div v-if="error" class="text-orange-code mt-2">
                 {{ error }}
@@ -58,7 +58,7 @@ watch(code, () => {
     compiler.value = new Compiler(code.value ?? '')
 })
 
-const compile = () => {
+const runCode = () => {
     error.value = ''
     try {
         compiler.value?.compile(store.input)
