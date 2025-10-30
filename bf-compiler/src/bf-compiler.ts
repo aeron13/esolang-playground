@@ -1,8 +1,6 @@
+import type { ASTree, ASTreeContent, ICompiler } from "./compiler"
 
-type ASTreeContent = string[] | string
-type ASTree = ASTreeContent[]
-
-export default class Compiler {
+export default class Compiler implements ICompiler {
 
     // 1. parse tokens, remove chars that are useless, put tokens into an array
     // - code within a loop must be saved in a nested array
