@@ -23,15 +23,24 @@
     const userTyping = ref<boolean>(false)
     const typingTimeout = ref()
     const showAsciiChart = ref(false)
+    const pasteListener = ref()
+
+    const handlePaste = (e: ClipboardEvent) => {
+        const text = e.clipboardData?.getData('text')
+        if (text) text.split('').forEach(char => parseChar(char))
+    }
 
     const handleClick = (char: string) => {
-
         userTyping.value = true;
         if (typingTimeout.value) clearTimeout(typingTimeout.value)
         typingTimeout.value = setTimeout(() => {
             userTyping.value = false
         }, 500)
 
+        parseChar(char)
+    }
+
+    const parseChar = (char: string) => {
         switch (char) {
             case 'del':
                 store.code = store.code?.slice(0, -1) ?? ''
@@ -65,8 +74,14 @@
             break;
         }
     }
+    
+    onMounted(() => {
+        pasteListener.value = window.addEventListener('paste', handlePaste)
+    })
 
     onBeforeUnmount(() => {
+        window.removeEventListener('paste', pasteListener.value)
         if (typingTimeout.value) clearTimeout(typingTimeout.value)
     })
+
 </script>
