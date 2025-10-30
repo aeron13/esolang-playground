@@ -1,5 +1,5 @@
 <template>
-    <span class="inline-block font-semibold h-5 w-[1px] bg-white transform translate-y-[2px] ml-1" :class="!userTyping && 'cursor-animate'"></span>
+    <span class="inline-block font-semibold h-4 w-[1px] bg-white transform translate-y-[2px] ml-1" :class="!userTyping && 'cursor-animate'"></span>
 </template>
 <script setup lang="ts">
     defineProps({
