@@ -22,6 +22,8 @@ export default class Compiler implements ICompiler {
     static memorySize = 18
     public memory: number[] = []
     public memoryPointer: number = 0
+    public runPointer: number = 0
+    public loopPointer: number
 
     constructor(code: string) {
         this.code = code
@@ -29,13 +31,58 @@ export default class Compiler implements ICompiler {
             this.memory.push(0)
         }
     }
-    
-    public compile = (inputString: string | null = null) => {
+
+    public setInput = (inputString: string | null = null) => {
         this.input = inputString?.split('') ?? []
+    }
+    
+    public compile = () => {
         this.clean()
         this.parse()
         this.run()
     }
+
+    public checkCode = (): boolean => {
+
+        const loopPointers: number[] = []
+
+        for(let i = 0; i <this.code.length; i++) {
+            const char = this.code[i];
+            if (char === '[')
+                loopPointers.push(i)
+            else if (char === ']') {
+                if (loopPointers.length < 1)
+                    throw new Error("unmatched closing braket")
+                else
+                    loopPointers.pop()
+            }
+        }
+
+        if (loopPointers.length)
+            throw new Error("unmatched loop brakets")
+
+        return true
+    }
+
+    public runNextChar = () => {
+        const char = this.code.charAt(this.runPointer)
+        switch (char) {
+            case '[':
+                this.loopPointer = this.runPointer
+            break;
+            case ']':
+                if (this.currentCell !== 0)
+                this.runPointer = this.loopPointer
+            break;
+            default:
+                this.execToken(char)
+            break;
+        }
+
+        if (this.runPointer !== this.code.length) this.runPointer++
+        return {next: this.runPointer }
+    }
+
 
     public parse = () => {
         const stack: ASTree[] = [[]];
@@ -78,47 +125,49 @@ export default class Compiler implements ICompiler {
     }
 
     private innerRun = (program: ASTree) => {
-
         program.forEach(token => {
-
             if (Array.isArray(token)) {
                 while(this.currentCell !== 0) {
                     this.innerRun(token)
                 }
-            }
-
-            switch (token) {
-                case '+':
-                    if (this.currentCell === 255) this.currentCell = 0;
-                    else this.currentCell++
-                break;
-                case '-':
-                    if (this.currentCell === 0) this.currentCell = 255;
-                    else this.currentCell--
-                break;
-                case '>':
-                    if (this.memoryPointer === this.memory.length - 1) this.memoryPointer = 0;
-                    this.memoryPointer++;
-                break;
-                case '<':
-                    if (this.memoryPointer === 0) this.memoryPointer = this.memory.length - 1;
-                    this.memoryPointer--;
-                break;
-                case ',':
-                    if (this.input.length === 0) {
-                        throw new Error('missing input')
-                    }
-                    this.currentCell = this.input[0].charCodeAt(0)
-                    this.input.shift()
-                break;
-                case '.':
-                    const outputChar = String.fromCharCode(this.currentCell)
-                    this.output.push(outputChar);
-                break;
-                default:
-                break;
+            } else {
+                this.execToken(token)
             }
         })
+    }
+
+    private execToken = (token: string) => {
+        switch (token) {
+            case '+':
+                if (this.currentCell === 255) this.currentCell = 0;
+                else this.currentCell++
+            break;
+            case '-':
+                if (this.currentCell === 0) this.currentCell = 255;
+                else this.currentCell--
+            break;
+            case '>':
+                if (this.memoryPointer === this.memory.length - 1) this.memoryPointer = 0;
+                this.memoryPointer++;
+            break;
+            case '<':
+                if (this.memoryPointer === 0) this.memoryPointer = this.memory.length - 1;
+                this.memoryPointer--;
+            break;
+            case ',':
+                if (this.input.length === 0) {
+                    throw new Error('missing input')
+                }
+                this.currentCell = this.input[0].charCodeAt(0)
+                this.input.shift()
+            break;
+            case '.':
+                const outputChar = String.fromCharCode(this.currentCell)
+                this.output.push(outputChar);
+            break;
+            default:
+            break;
+        }
     }
 
     public clean = () => {

@@ -19,7 +19,8 @@ class Test {
     public run() {
         console.log(this.description)
         const compiler = new Compiler(this.program)
-        compiler.compile(this.input)
+        compiler.setInput(this.input)
+        compiler.compile()
         this.output = compiler.output?.join('')
 
         console.log(`Expected: ${this.expectedResult} \nResult: ${this.output}`)

@@ -3,7 +3,7 @@ import type { IBfCodeStore } from '~/types'
 
 export const useBfStore = defineStore('bf', {
     state: (): IBfCodeStore => ({
-        code: null,
+        code: '',
         codeHtml: []
     })
 })

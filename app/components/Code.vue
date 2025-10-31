@@ -41,6 +41,7 @@
     }
 
     const parseChar = (char: string) => {
+        const charId = `t${store.code?.length ?? 0}`
         switch (char) {
             case 'del':
                 store.code = store.code?.slice(0, -1) ?? ''
@@ -55,19 +56,19 @@
             case '+':
             case '-':
                 store.code += char
-                store.codeHtml.push(`<span class="text-orange-code">${char}</span>`)
+                store.codeHtml.push(`<span class="text-orange-code" id="${charId}">${char}</span>`)
             break;
             case '.':
             case ',':
                 store.code += char
-                store.codeHtml.push(`<span class="text-fuchsia-code">${char}</span>`) 
+                store.codeHtml.push(`<span class="text-fuchsia-code" id="${charId}">${char}</span>`) 
             break;
             case '[':
             case ']':
             case '>':
             case '<':
                 store.code += char
-                store.codeHtml.push(`<span class="text-blue-code">${char}</span>`)
+                store.codeHtml.push(`<span class="text-blue-code" id="${charId}">${char}</span>`)
             break;
             default:
                 store.codeHtml.push(`<span class="text-grey-400">${char}</span>`)

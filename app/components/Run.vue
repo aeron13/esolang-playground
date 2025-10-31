@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-full">
         <div class="bg-dark-900/50 w-full h-[330px] max-h-[50%] rounded-sm p-2 overflow-scroll">
-            <code v-html="store.codeHtml?.join('')" class="font-semibold text-base inline-block font-sans tracking-wider">
+            <code ref="code-ref" v-html="store.codeHtml?.join('')" class="font-semibold text-base inline-block font-sans tracking-wider">
             </code>
         </div>
         <div class="px-5 pt-4">
@@ -43,31 +43,58 @@ const compiler = ref<ICompiler>()
 const code = computed(() => {
     return store.code
 })
-const memory = computed(() => {
-    return compiler.value?.memory
-})
-
+const memory = ref<number[]>()
+const pointer = ref<number>(0)
 const error = ref<string>()
 
+const codeRef = useTemplateRef('code-ref')
 
 onMounted(() => {
     compiler.value = new Compiler(code.value ?? '')
+    memory.value = [...compiler.value.memory]
 })
 
 watch(code, () => {
     compiler.value = new Compiler(code.value ?? '')
 })
 
-const runCode = () => {
+const runCode = async () => {
     error.value = ''
+    store.output = ''
     try {
-        compiler.value?.compile(store.input)
+        compiler.value!.setInput(store.input)
+        compiler.value!.checkCode()
+        while (store.code!.length > pointer.value ) {
+            await runStep()
+        }
     } catch(e) {
         error.value = e as string
     }
-    nextTick(() => {
-        store.output = compiler.value?.output.join('')
-    })
+
+    // try {
+    //     compiler.value?.compile(store.input)
+    // } catch(e) {
+    //     error.value = e as string
+    // }
+
+    
+    store.output = compiler.value?.output.join('')
+
+}
+
+const runStep = async () => {
+    codeRef.value?.querySelector(`.active`)?.classList.remove('active')
+    codeRef.value?.querySelector(`#t${pointer.value}`)?.classList.add('active')
+    const { next } = compiler.value!.runNextChar()
+    memory.value = [...compiler.value!.memory]
+    await new Promise(r => {setTimeout(r, 100)});
+    pointer.value = next
 }
 
 </script>
+<style lang="css">
+    span.active {
+        background-color: white;
+        color: red
+    }
+</style>
