@@ -1,8 +1,8 @@
 <template>
-    <button type="button" class="text-[14px]">
+    <button type="button" class="text-[14px]" :disabled="disabled">
         <span 
             class="block font-white font-semibold border rounded-[3px] px-4 py-1.5"
-            :class="priority === 1 ? 'bg-purple-500 border-purple-300 shadow-button-dark' : 'bg-dark-700 border-purple-300/50 shadow-button-2-dark' "
+            :class="!disabled ? 'bg-purple-500 border-purple-300 shadow-button-dark' : 'bg-dark-700 border-purple-300/50 shadow-button-2-dark' "
         >
             {{ text }}
         </span>
@@ -11,6 +11,6 @@
 <script setup lang="ts">
 defineProps({
     text: {type: String, required: true},
-    priority: {type: Number, default: 1}
+    disabled: {type: Boolean, default: false}
 })
 </script>

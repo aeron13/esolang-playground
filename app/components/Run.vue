@@ -11,9 +11,9 @@
                 </div>
             </div>
             <div class="flex gap-3">
-                <UiButtonBig text="Run >" @click="runCode" />
-                <UiButtonBig text="Pause" :priority="2" />
-                <UiButtonBig text="Stop" :priority="2" />
+                <UiButtonBig text="Run >" @click="handleRun" :disabled="running || paused" />
+                <UiButtonBig :text="paused ? 'Continue' : 'Pause'" @click="paused ? handleContinue() : handlePause()" :disabled="!running && !paused" />
+                <UiButtonBig text="Stop" :disabled="!running || paused" />
             </div>
             <div v-if="error" class="text-orange-code mt-2">
                 {{ error }}
@@ -46,6 +46,8 @@ const code = computed(() => {
 const memory = ref<number[]>()
 const pointer = ref<number>(0)
 const error = ref<string>()
+const running = ref<boolean>(false)
+const paused = ref<boolean>(false)
 
 const codeRef = useTemplateRef('code-ref')
 
@@ -58,13 +60,34 @@ watch(code, () => {
     compiler.value = new Compiler(code.value ?? '')
 })
 
-const runCode = async () => {
+const handleRun = () => {
     error.value = ''
     store.output = ''
+    running.value = true
     try {
+        compiler.value!.clean()
         compiler.value!.setInput(store.input)
         compiler.value!.checkCode()
-        while (store.code!.length > pointer.value ) {
+    } catch(e) {
+        error.value = e as string
+    }
+    runCode()
+}
+
+const handlePause = () => {
+    running.value = false
+    paused.value = true
+}
+
+const handleContinue = () => {
+    running.value = true
+    paused.value = false
+    runCode()
+}
+
+const runCode = async () => {
+    try {
+        while (store.code!.length > pointer.value && running.value) {
             await runStep()
         }
     } catch(e) {
@@ -77,7 +100,7 @@ const runCode = async () => {
     //     error.value = e as string
     // }
 
-    
+    running.value = false
     store.output = compiler.value?.output.join('')
 
 }
