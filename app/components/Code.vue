@@ -2,6 +2,7 @@
     <div class="w-full h-full flex flex-col">
         <div class="relative bg-dark-900 w-full flex-grow rounded-sm">
             <textarea 
+                inputmode="none"
                 ref="textareaRef"
                 class="p-2 absolute w-full h-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none" 
                 v-model="store.code" 
@@ -60,12 +61,6 @@
 
     const handleKeyboardClick = (key: string) => {
         
-        textarea.value!.focus()
-        nextTick(() => {
-            textarea.value!.selectionStart = selectionStart.value + 1
-            textarea.value!.selectionEnd = selectionEnd.value + 1
-        })
-
         let char = '';
         const start = selectionStart.value
         const end = selectionEnd.value
@@ -91,7 +86,12 @@
             store.code = char
         }
         parseCode()
-         
+        
+        textarea.value!.focus()
+        nextTick(() => {
+            textarea.value!.selectionStart = selectionStart.value + 1
+            textarea.value!.selectionEnd = selectionEnd.value + 1
+        })
     }
 
     const parseChar = (char: string, index: number) => {
