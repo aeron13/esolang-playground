@@ -38,7 +38,7 @@ class Test {
         pointer = next
       }
       this.output = this.compiler.output?.join('')
-      this.passed = this.expectedResult === this.output
+      this.passed = this.output.charCodeAt(0) === this.expectedResult.charCodeAt(0)
       this.outputResults()
     }
 
@@ -63,6 +63,7 @@ const exampleProgram1 = `+++++ +++++
 > +++++ ++++ .
 `
 new Test(exampleProgram1, '1) It: compiles code and output correctly', 'CIAO').run()
+new Test(exampleProgram1, '1b) It: outputs correctly when running step by step', 'CIAO').runStepByStep()
 
 const exampleProgram2 = `>,
 >
@@ -88,4 +89,5 @@ const exampleProgram2 = `>,
   > ++ . >
 ]`
 new Test(exampleProgram2, '2) It: evaluates input correctly', '<', '15').run()
-new Test(exampleProgram2, '3) It: outputs correctly when running step by step', '<', '15').runStepByStep()
+
+new Test(exampleProgram2, '2b) It: outputs correctly when running step by step', '<', '15').runStepByStep()

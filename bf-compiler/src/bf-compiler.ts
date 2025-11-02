@@ -23,7 +23,7 @@ export default class Compiler implements ICompiler {
     public memory: number[] = []
     public memoryPointer: number = 0
     public runPointer: number = 0
-    public loopPointer: number
+    public loopPointers: number[] = []
 
     constructor(code: string) {
         this.code = code
@@ -68,11 +68,20 @@ export default class Compiler implements ICompiler {
         const char = this.code.charAt(this.runPointer)
         switch (char) {
             case '[':
-                this.loopPointer = this.runPointer
+                if (this.currentCell !== 0) {
+                    this.loopPointers.push(this.runPointer) 
+                } else {
+                    let p = this.runPointer+1;
+                    while (this.code.charAt(p) !== ']') p++
+                    this.runPointer = p
+                }
             break;
             case ']':
-                if (this.currentCell !== 0)
-                this.runPointer = this.loopPointer
+                if (this.currentCell !== 0) {
+                    this.runPointer = this.loopPointers[this.loopPointers.length-1]
+                } else {
+                    this.loopPointers.pop()
+                }
             break;
             default:
                 this.execToken(char)
