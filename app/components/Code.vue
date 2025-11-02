@@ -1,9 +1,15 @@
 <template>
     <div class="w-full h-full flex flex-col">
-        <div class="bg-dark-900 w-full flex-grow rounded-sm p-2">
-            <code class="font-semibold h-full text-base inline-block font-sans tracking-wider">
+        <div class="relative bg-dark-900 w-full flex-grow rounded-sm">
+            <textarea 
+                ref="textareaRef"
+                class="p-2 absolute w-full h-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none" 
+                v-model="store.code" 
+                @blur="handleBlur"
+                @input.prevent="handleInput"
+            ></textarea>
+            <code class="p-2 z-1 relative pointer-events-none w-full font-semibold h-full text-base inline-block font-sans tracking-wider">
                 <span v-html="store.codeHtml.join('')"></span>
-                <UiCursor :user-typing="userTyping" />
             </code>
         </div>
         <div class="flex justify-between items-center pt-4 px-5">
@@ -11,7 +17,7 @@
             <UiButtonBig text="Run >" @click="$emit('goToRun')" />
         </div>
         <div class="px-5 pt-6 pb-4">
-            <UiKeyboard @click="handleClick" class="mx-auto"></UiKeyboard>
+            <UiKeyboard @click="handleKeyboardClick" class="mx-auto"></UiKeyboard>
         </div>
     </div>
     <AsciiChart v-show="showAsciiChart" @close="showAsciiChart = false"></AsciiChart>
@@ -20,56 +26,95 @@
     import { useBfStore } from '~/store/bfStore'
 
     const store = useBfStore()
-    const userTyping = ref<boolean>(false)
-    const typingTimeout = ref()
     const showAsciiChart = ref(false)
     const pasteListener = ref()
 
+    const textarea = useTemplateRef('textareaRef')
+    const selectionStart = ref(0)
+    const selectionEnd = ref(0)
+
     defineEmits(['goToRun'])
+
+    const handleInput = (e: InputEvent) => {
+        selectionStart.value = textarea.value!.selectionStart
+        selectionEnd.value = textarea.value!.selectionEnd
+        parseCode()
+    }
+
+    const handleBlur = () => {
+        selectionStart.value = textarea.value!.selectionStart
+        selectionEnd.value = textarea.value!.selectionEnd
+    }
 
     const handlePaste = (e: ClipboardEvent) => {
         const text = e.clipboardData?.getData('text')
-        if (text) text.split('').forEach(char => parseChar(char))
+        if (text) text.split('').forEach((char, i) => parseChar(char, i))
     }
 
-    const handleClick = (char: string) => {
-        userTyping.value = true;
-        if (typingTimeout.value) clearTimeout(typingTimeout.value)
-        typingTimeout.value = setTimeout(() => {
-            userTyping.value = false
-        }, 500)
-
-        parseChar(char)
+    const parseCode = () => {
+        store.codeHtml = []
+        store.code?.split('').forEach((char, i) => {
+            parseChar(char, i)
+        })
     }
 
-    const parseChar = (char: string) => {
-        const charId = `t${store.code?.length ?? 0}`
-        switch (char) {
+    const handleKeyboardClick = (key: string) => {
+        
+        textarea.value!.focus()
+        nextTick(() => {
+            textarea.value!.selectionStart = selectionStart.value + 1
+            textarea.value!.selectionEnd = selectionEnd.value + 1
+        })
+
+        let char = '';
+        const start = selectionStart.value
+        const end = selectionEnd.value
+        
+        switch (key) {
             case 'del':
-                store.code = store.code?.slice(0, -1) ?? ''
-                store.codeHtml.pop() 
+                if (store.code && start === end && end === store.code.length) {
+                    store.code = store.code.slice(0, start - 1)
+                } else if (store.code) {
+                    store.code = store.code.slice(0, start) + store.code.slice(end)
+                }
             break;
+            case 'SPACE':
+                char = ' '
+            break;
+            default:
+                char = key
+            break;
+        }
+        if (store.code) {
+            store.code = store.code.slice(0, start) + char + store.code.slice(end)
+        } else if (char !== 'del') {
+            store.code = char
+        }
+        parseCode()
+         
+    }
+
+    const parseChar = (char: string, index: number) => {
+        const charId = `t${index}`
+        switch (char) {
             case '\n':
                 store.codeHtml.push('<br>');
             break;
-            case 'SPACE':
+            case ' ':
                 store.codeHtml.push('&nbsp;');
             break;
             case '+':
             case '-':
-                store.code += char
                 store.codeHtml.push(`<span class="text-orange-code" id="${charId}">${char}</span>`)
             break;
             case '.':
             case ',':
-                store.code += char
                 store.codeHtml.push(`<span class="text-fuchsia-code" id="${charId}">${char}</span>`) 
             break;
             case '[':
             case ']':
             case '>':
             case '<':
-                store.code += char
                 store.codeHtml.push(`<span class="text-blue-code" id="${charId}">${char}</span>`)
             break;
             default:
@@ -84,7 +129,6 @@
 
     onBeforeUnmount(() => {
         window.removeEventListener('paste', pasteListener.value)
-        if (typingTimeout.value) clearTimeout(typingTimeout.value)
     })
 
 </script>

@@ -21,31 +21,6 @@
 </template>
 <script setup lang="ts">
 
-    const emit = defineEmits(['click'])
-    const keydownListener = ref()
+const emit = defineEmits(['click'])
 
-    onMounted(() => {
-        keydownListener.value = window.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.ctrlKey || e.altKey || e.metaKey) return;
-            switch (e.code) {
-                case 'Backspace':
-                    emit('click', 'del');
-                break;
-                case 'Space':
-                    emit('click', 'SPACE');
-                break;
-                case 'Enter':
-                    emit('click', '\n');
-                break;
-                default:
-                    if (e.key.length !== 1) return;
-                    emit('click', e.key)
-                break;
-            }
-        })
-    })
-
-    onBeforeUnmount(() => {
-        window.removeEventListener('keydown', keydownListener.value)
-    })
 </script>
