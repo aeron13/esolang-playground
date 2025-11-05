@@ -12,6 +12,7 @@
                             name="email" 
                             label="Email" 
                             v-model="email" 
+                            :disabled="isFormDisabled"
                             :show-error="v$.email.$dirty && v$.email.$error" 
                             :error-message="v$.email.$errors[0]?.$message as string" 
                         />
@@ -20,11 +21,13 @@
                             name="password" 
                             label="Password" 
                             v-model="password"
+                            :disabled="isFormDisabled"
                             :show-error="v$.password.$dirty && v$.password.$error" 
                             :error-message="v$.password.$errors[0]?.$message as string" 
                         />
                         <div v-if="error" class="text-orange-code">{{ error }}</div>
-                        <UiButtonBig class="mt-4" type="submit" text="Register" />
+                        <UiButtonBig class="mt-4" type="submit" text="Register" :disabled="isFormDisabled" />
+                        <div v-if="successMessage" class="text-green-400 text-sm">{{ successMessage }}</div>
                     </form>
                 </div>
             </template>
@@ -39,6 +42,10 @@ import { required, email as emailValidator, minLength, helpers } from '@vuelidat
 const email = ref('');
 const password = ref('');
 const error = ref('');
+const isSubmitting = ref(false)
+const isSubmittedSuccessfully = ref(false)
+const successMessage = ref('')
+const isFormDisabled = computed(() => isSubmitting.value || isSubmittedSuccessfully.value)
 
 const rules = computed(() => ({
     email: {
@@ -65,16 +72,25 @@ const handleSubmit = () => {
     if (v$.value.$invalid) {
         return
     }
+    isSubmitting.value = true
+    error.value = ''
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email.value, password.value)
     .then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
         console.log(user)
+        successMessage.value = 'Registration successful! Welcome aboard.'
     })
     .catch((e) => {
         console.log(e.code)
         error.value = e.message.replace('Firebase: ', '');
+    })
+    .finally(() => {
+        // keep disabled if success; re-enable if there was an error
+        if (!isSubmittedSuccessfully.value) {
+            isSubmitting.value = false
+        }
     });
 
 }
