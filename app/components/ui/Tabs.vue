@@ -31,7 +31,7 @@ defineProps({
         }
     })
     
-const activeTab = defineModel();
+const activeTab = defineModel({default: 0});
 
 defineEmits(['update:modelValue'])
     
