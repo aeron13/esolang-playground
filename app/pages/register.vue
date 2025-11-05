@@ -1,11 +1,15 @@
 <template>
     <div class="px-5 h-full py-4">
         <UiTabs 
-            :tabs="[{ title: 'Register'}]"
+            :tabs="[{ title: 'Login'},{title: 'Register'}]"
+            :model-value="activeTab"
+            @update:model-value="handleTabClick"
         >
-            <template #tab1>
+            <template #tab2>
                 <div class="px-6 py-6">
-                    <h1 class="font-mono text-lg max-w-[200px]">Create<br/> an account</h1>
+                    <div class="h-[65px] flex items-center">
+                        <h1 class="font-mono text-lg max-w-[200px]">Create<br/> an account</h1>
+                    </div>
                     <form @submit.prevent="handleSubmit" class="flex flex-col gap-5 mt-6" autocomplete="on" autocorrect="on">
                         <UiInputField 
                             type="email" 
@@ -46,6 +50,7 @@ const isSubmitting = ref(false)
 const isSubmittedSuccessfully = ref(false)
 const successMessage = ref('')
 const isFormDisabled = computed(() => isSubmitting.value || isSubmittedSuccessfully.value)
+const activeTab = ref(1)
 
 const rules = computed(() => ({
     email: {
@@ -92,6 +97,10 @@ const handleSubmit = () => {
             isSubmitting.value = false
         }
     });
+}
 
+const handleTabClick = (tab: number) => {
+    if (tab === 0) 
+        navigateTo('/login')
 }
 </script>
