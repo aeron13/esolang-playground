@@ -11,3 +11,13 @@ export interface IBfCodeStore extends ICodeStore {
     input?: string|null
     output?: string|null
 }
+
+export interface IMenuItem {
+    link: string
+    text: string
+}
+
+export interface IMenuBlock {
+    title: string
+    items: IMenuItem[]
+}
