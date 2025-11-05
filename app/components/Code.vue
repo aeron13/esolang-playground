@@ -1,7 +1,8 @@
 <template>
     <div class="w-full h-full flex flex-col">
         <div class="relative bg-dark-900 w-full flex-grow rounded-sm">
-            <textarea 
+            <textarea
+                autofocus="true"
                 inputmode="none"
                 ref="textareaRef"
                 class="p-2 absolute w-full h-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none" 
