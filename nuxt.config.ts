@@ -22,5 +22,17 @@ export default defineNuxtConfig({
     }
   },
 
+  app: {
+    head: {
+      title: 'Esolang Playground',
+      htmlAttrs: {
+        lang: 'en',
+      },
+      link: [
+        { rel: 'icon', type: 'image/jpg', href: '/favicon.jpg' },
+      ],
+    },
+  },
+
   modules: ['@pinia/nuxt'],
 })
