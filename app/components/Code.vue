@@ -40,7 +40,7 @@
     const handleInput = (e: InputEvent) => {
         selectionStart.value = textarea.value!.selectionStart
         selectionEnd.value = textarea.value!.selectionEnd
-        parseCode()
+        store.parseCode()
     }
 
     const handleBlur = () => {
@@ -50,14 +50,7 @@
 
     const handlePaste = (e: ClipboardEvent) => {
         const text = e.clipboardData?.getData('text')
-        if (text) text.split('').forEach((char, i) => parseChar(char, i))
-    }
-
-    const parseCode = () => {
-        store.codeHtml = []
-        store.code?.split('').forEach((char, i) => {
-            parseChar(char, i)
-        })
+        if (text) text.split('').forEach((char, i) => store.parseChar(char, i))
     }
 
     const handleKeyboardClick = (key: string) => {
@@ -86,42 +79,13 @@
         } else if (char !== 'del') {
             store.code = char
         }
-        parseCode()
+        store.parseCode()
         
         textarea.value!.focus()
         nextTick(() => {
             textarea.value!.selectionStart = selectionStart.value + 1
             textarea.value!.selectionEnd = selectionEnd.value + 1
         })
-    }
-
-    const parseChar = (char: string, index: number) => {
-        const charId = `t${index}`
-        switch (char) {
-            case '\n':
-                store.codeHtml.push('<br>');
-            break;
-            case ' ':
-                store.codeHtml.push('&nbsp;');
-            break;
-            case '+':
-            case '-':
-                store.codeHtml.push(`<span class="text-orange-code" id="${charId}">${char}</span>`)
-            break;
-            case '.':
-            case ',':
-                store.codeHtml.push(`<span class="text-fuchsia-code" id="${charId}">${char}</span>`) 
-            break;
-            case '[':
-            case ']':
-            case '>':
-            case '<':
-                store.codeHtml.push(`<span class="text-blue-code" id="${charId}">${char}</span>`)
-            break;
-            default:
-                store.codeHtml.push(`<span class="text-grey-400">${char}</span>`)
-            break;
-        }
     }
     
     onMounted(() => {

@@ -14,7 +14,11 @@
     </div>
 </template>
 <script setup lang="ts">
+import loadCodeFromId from '~/middleware/loadCodeFromId';
 
 const activeTab = ref(0)
 
+definePageMeta({
+  middleware: [loadCodeFromId],
+})
 </script>
