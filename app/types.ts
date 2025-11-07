@@ -1,12 +1,11 @@
 export interface IProgram {
-    id: string
     language: string
-    title: string
+    title: string|null
     code: string
     createdAt: string
     updatedAt: string
     userId: string
-    deletedAt: string
+    deletedAt: string|null
     public: boolean
 }
 
@@ -18,7 +17,7 @@ export interface IUser {
 }
 
 export interface IUserStore {
-    user: IUser | null
+    userId: string | undefined
     programs: IProgram[] | null
     loading: boolean
 }
@@ -28,6 +27,7 @@ export type ITabs = {
 }
 
 export interface ICodeStore {
+    programId?: string
     code: string|null
     codeHtml: string[]
 }

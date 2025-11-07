@@ -26,6 +26,7 @@
 </template>
 <script setup lang="ts">
     import { useBfStore } from '~/stores/bfStore'
+    import { useUserStore } from '~/stores/userStore'
 
     const store = useBfStore()
     const showAsciiChart = ref(false)
@@ -34,6 +35,8 @@
     const textarea = useTemplateRef('textareaRef')
     const selectionStart = ref(0)
     const selectionEnd = ref(0)
+    const saveTimer = ref()
+    const lastV = ref(0)
 
     defineEmits(['goToRun'])
 
@@ -41,6 +44,7 @@
         selectionStart.value = textarea.value!.selectionStart
         selectionEnd.value = textarea.value!.selectionEnd
         store.parseCode()
+        lastV.value++
     }
 
     const handleBlur = () => {
@@ -50,6 +54,7 @@
 
     const handlePaste = (e: ClipboardEvent) => {
         const text = e.clipboardData?.getData('text')
+        lastV.value++
         if (text) text.split('').forEach((char, i) => store.parseChar(char, i))
     }
 
@@ -80,6 +85,7 @@
             store.code = char
         }
         store.parseCode()
+        lastV.value++
         
         textarea.value!.focus()
         nextTick(() => {
@@ -87,13 +93,29 @@
             textarea.value!.selectionEnd = selectionEnd.value + 1
         })
     }
+
+    const saveOnInterval = (lastVal:number) => {
+        if (lastV.value === lastVal) {
+            saveTimer.value = setTimeout(() => {saveOnInterval(lastVal)}, 5000)
+            return
+        }
+        const user = useUserStore()
+        if (!store.code || !user.isAuthenticated) {
+            saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
+            return
+        }
+        store.save()
+        saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
+    }
     
     onMounted(() => {
         pasteListener.value = window.addEventListener('paste', handlePaste)
+        saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     })
 
     onBeforeUnmount(() => {
         window.removeEventListener('paste', pasteListener.value)
+        clearTimeout(saveTimer.value)
     })
 
 </script>

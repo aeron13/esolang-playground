@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import type { IBfCodeStore } from '~/types'
-import {addDoc, collection} from 'firebase/firestore'
+import type { IBfCodeStore, IProgram } from '~/types'
+import {addDoc, collection, doc, updateDoc} from 'firebase/firestore'
 import { useFirestore } from '~/composables/useFirebase';
 
 export const useBfStore = defineStore('bf', {
@@ -8,7 +8,6 @@ export const useBfStore = defineStore('bf', {
         code: '',
         codeHtml: []
     }),
-
     actions: {
         parseCode() {
             this.codeHtml = []
@@ -46,27 +45,31 @@ export const useBfStore = defineStore('bf', {
         },
         save() {
             const {db} = useFirestore()
-            const data = {
+            const user = useUserStore()
+
+            if (!user.isAuthenticated || !this.code)
+                return
+
+            const data: IProgram = {
                 language: 'bf',
                 title: 'my pr',
                 code : this.code,
-                user_id: null,
-                deleted_at: null,
+                userId: user.userId!,
+                deletedAt: null,
                 public: false,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
-            console.log(data)
-            addDoc(collection(db, "programs"), data)
-
-            // - Language
-            // - Title
-            // - Code
-            // - createdAt
-            // - updatedAt
-            // - UserId
-            // - DeletedAt
-            // - public
+            if (!this.programId) {
+                addDoc(collection(db, "programs"), data)
+                .then(ref => {
+                    this.programId = ref.id
+                })
+            } else {
+                const docRef = doc(db, "programs", this.programId)
+                updateDoc(docRef, data as any)
+            }
+            console.log('Saved program ' + this.programId, data)
         }
     }
 })

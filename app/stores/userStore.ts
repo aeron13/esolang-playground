@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import type { User } from 'firebase/auth'
 import { useFirestore } from '~/composables/useFirebase'
 import type { IProgram } from '~/types'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export const useUserStore = defineStore('user', {
     state: () => ({
-      user: null as User | null,
+      userId: undefined as string | undefined,
       programs: [] as IProgram[],
       loading: true,
     }),
@@ -16,9 +15,10 @@ export const useUserStore = defineStore('user', {
       init() {
         const { auth } = useFirestore()
         onAuthStateChanged(auth, (user) => {
-          this.user = user
+          this.userId = user?.uid
           this.loading = false
         })
+        console.log(this.userId)
       },
 
       register(email: string, password: string): Promise<string> {
@@ -26,7 +26,7 @@ export const useUserStore = defineStore('user', {
           const { auth } = useFirestore()
           createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
-              this.user = userCredential.user;
+              this.userId = userCredential.user.uid;
               resolve('Registration successful! Welcome aboard.')
           })
           .catch((e) => {
@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', {
           const { auth } = useFirestore()
           signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
-            this.user = userCredential.user;
+            this.userId = userCredential.user.uid;
             resolve('Login successful! Welcome back.')
           })
           .catch((e) => {
@@ -54,10 +54,11 @@ export const useUserStore = defineStore('user', {
       logout() {
         const { auth } = useFirestore()
         signOut(auth)
+        this.userId = undefined
       },
     },
   
     getters: {
-      isAuthenticated: (state) => !!state.user,
+      isAuthenticated: (state) => !!state.userId,
     },
   })
