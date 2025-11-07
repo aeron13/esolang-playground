@@ -1,3 +1,28 @@
+export interface IProgram {
+    id: string
+    language: string
+    title: string
+    code: string
+    createdAt: string
+    updatedAt: string
+    userId: string
+    deletedAt: string
+    public: boolean
+}
+
+export interface IUser {
+    id: string
+    email: string
+    createdAt: string
+    updatedAt: string
+}
+
+export interface IUserStore {
+    user: IUser | null
+    programs: IProgram[] | null
+    loading: boolean
+}
+
 export type ITabs = {
     title: string
 }

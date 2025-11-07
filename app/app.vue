@@ -6,25 +6,23 @@
     </main>
     <Footer></Footer>
     <UiMenu v-show="store.userMenu" @close="store.closeUserMenu">
-      <UiMenuNav :menu-list="[{
-        title: 'Create an account to save programs',
-        items: [{
-          link: '/register',
-          text: 'Register'
-        }]
-      },
-      {
-        title: 'Already have an account?',
-        items: [{
-          link: '/login',
-          text: 'Login'
-        }]
-      }]"
-      />
+      <UiMenuNav :menu-list="userMenu"/>
     </UiMenu>
   </div>
 </template>
 <script setup lang=ts>
-import { useUiStore } from '~/store/uiStore'
+import { useUiStore } from '~/stores/uiStore'
+import { useUserStore } from '~/stores/userStore'
 const store = useUiStore()
+const user = useUserStore()
+import { not_authenticated_menu } from '~/data'
+
+const userMenu = computed(() => {
+  return user.isAuthenticated ? []
+  : not_authenticated_menu
+});
+
+onMounted(() => {
+  user.init()
+})
 </script>

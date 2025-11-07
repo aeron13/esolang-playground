@@ -34,7 +34,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { useBfStore } from '~/store/bfStore'
+import { useBfStore } from '~/stores/bfStore'
 import Compiler from '~~/bf-compiler/src/bf-compiler'
 import type { ICompiler } from '~~/bf-compiler/src/compiler'
 

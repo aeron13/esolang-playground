@@ -1,3 +1,18 @@
+export const not_authenticated_menu = [{
+    title: 'Create an account to save programs',
+    items: [{
+      link: '/register',
+      text: 'Register'
+    }]
+  },
+  {
+    title: 'Already have an account?',
+    items: [{
+      link: '/login',
+      text: 'Login'
+    }]
+  }];
+
 export const ascii_map = {
     "control": {
         "\\t": 9,      

@@ -18,7 +18,7 @@
 </nav>
 </template>
 <script setup lang="ts">
-import { useUiStore } from '~/store/uiStore'
+import { useUiStore } from '~/stores/uiStore'
 const store = useUiStore()
 import type { IMenuBlock } from '~/types'
 

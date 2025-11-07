@@ -16,7 +16,7 @@
                             name="email" 
                             label="Email" 
                             v-model="email" 
-                            :disabled="isFormDisabled"
+                            :disabled="isSubmitting"
                             :show-error="v$.email.$dirty && v$.email.$error" 
                             :error-message="v$.email.$errors[0]?.$message as string" 
                         />
@@ -25,12 +25,12 @@
                             name="password" 
                             label="Password" 
                             v-model="password"
-                            :disabled="isFormDisabled"
+                            :disabled="isSubmitting"
                             :show-error="v$.password.$dirty && v$.password.$error" 
                             :error-message="v$.password.$errors[0]?.$message as string" 
                         />
                         <div v-if="error" class="text-orange-code">{{ error }}</div>
-                        <UiButtonBig class="mt-4" type="submit" text="Register" :disabled="isFormDisabled" />
+                        <UiButtonBig class="mt-4" type="submit" text="Register" :disabled="isSubmitting" />
                         <div v-if="successMessage" class="text-green-400 text-sm">{{ successMessage }}</div>
                     </form>
                 </div>
@@ -39,17 +39,15 @@
     </div>
 </template>
 <script setup lang="ts">
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import useVuelidate from '@vuelidate/core'
 import { required, email as emailValidator, minLength, helpers } from '@vuelidate/validators'
+import { useUserStore } from '~/stores/userStore'
 
 const email = ref('');
 const password = ref('');
 const error = ref('');
 const isSubmitting = ref(false)
-const isSubmittedSuccessfully = ref(false)
 const successMessage = ref('')
-const isFormDisabled = computed(() => isSubmitting.value || isSubmittedSuccessfully.value)
 const activeTab = ref(1)
 
 const rules = computed(() => ({
@@ -68,10 +66,6 @@ const rules = computed(() => ({
 
 const v$ = useVuelidate(rules, { email, password })
 
-onMounted(() => {
-    useFirestore()
-})
-
 const handleSubmit = () => {
     v$.value.$touch()
     if (v$.value.$invalid) {
@@ -79,28 +73,24 @@ const handleSubmit = () => {
     }
     isSubmitting.value = true
     error.value = ''
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then((userCredential) => {
-        // Signed up 
-        const user = userCredential.user;
-        console.log(user)
-        successMessage.value = 'Registration successful! Welcome aboard.'
+
+    useUserStore().register(email.value, password.value).then((message) => {
+        successMessage.value = message
+        navigateTo('/')
+    }).catch((error) => {
+        error.value = error as string
+    }).finally(() => {
+        isSubmitting.value = false
     })
-    .catch((e) => {
-        console.log(e.code)
-        error.value = e.message.replace('Firebase: ', '');
-    })
-    .finally(() => {
-        // keep disabled if success; re-enable if there was an error
-        if (!isSubmittedSuccessfully.value) {
-            isSubmitting.value = false
-        }
-    });
+
 }
 
 const handleTabClick = (tab: number) => {
     if (tab === 0) 
         navigateTo('/login')
 }
+
+definePageMeta({
+    notWhenAuthenticated: true
+})
 </script>

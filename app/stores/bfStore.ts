@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { IBfCodeStore } from '~/types'
 import {addDoc, collection} from 'firebase/firestore'
-import { useFirestore } from '~/composables/useFirestore';
+import { useFirestore } from '~/composables/useFirebase';
 
 export const useBfStore = defineStore('bf', {
     state: (): IBfCodeStore => ({

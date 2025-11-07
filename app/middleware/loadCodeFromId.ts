@@ -1,5 +1,5 @@
 import { doc, getDoc } from "firebase/firestore";
-import { useBfStore } from "~/store/bfStore";
+import { useBfStore } from "~/stores/bfStore";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
     if (!to.query.code) {

@@ -25,7 +25,7 @@
     <AsciiChart v-show="showAsciiChart" @close="showAsciiChart = false"></AsciiChart>
 </template>
 <script setup lang="ts">
-    import { useBfStore } from '~/store/bfStore'
+    import { useBfStore } from '~/stores/bfStore'
 
     const store = useBfStore()
     const showAsciiChart = ref(false)
