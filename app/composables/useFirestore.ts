@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 export const useFirestore = () => {
@@ -14,8 +14,8 @@ export const useFirestore = () => {
     };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app!);
 
     return {app, db}
 }
