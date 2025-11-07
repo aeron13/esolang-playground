@@ -23,5 +23,8 @@ const userMenu = computed(() => {
 
 onMounted(() => {
   user.init()
+  setTimeout(() => {
+    user.queryPrograms()
+  }, 1000)
 })
 </script>

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useFirestore } from '~/composables/useFirebase'
+import { collection, query, where, getDocs, QuerySnapshot } from "firebase/firestore";
 import type { IProgram } from '~/types'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -56,6 +57,27 @@ export const useUserStore = defineStore('user', {
         signOut(auth)
         this.userId = undefined
       },
+
+      queryPrograms() {
+        return new Promise(async (resolve, reject) => {
+
+          if (!this.isAuthenticated) reject('user not auth')
+
+          const { db } = useFirestore()
+          const q = query(
+            collection(db, "programs"), 
+            where("userId", "==", this.userId), 
+            where("deletedAt", "==", null)
+          );
+          getDocs(q).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              console.log(doc.id, " => ", doc.data());
+            });
+          })
+        })
+
+      }
+
     },
   
     getters: {
