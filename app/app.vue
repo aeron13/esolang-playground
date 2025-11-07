@@ -13,13 +13,12 @@
 <script setup lang=ts>
 import { useUiStore } from '~/stores/uiStore'
 import { useUserStore } from '~/stores/userStore'
+import { not_authenticated_menu, authenticated_menu } from '~/data'
+
 const store = useUiStore()
 const user = useUserStore()
-import { not_authenticated_menu } from '~/data'
-
 const userMenu = computed(() => {
-  return user.isAuthenticated ? []
-  : not_authenticated_menu
+  return user.isAuthenticated ? authenticated_menu : not_authenticated_menu
 });
 
 onMounted(() => {

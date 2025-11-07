@@ -1,4 +1,7 @@
-export const not_authenticated_menu = [{
+import type { IMenuBlock } from "./types";
+
+export const not_authenticated_menu: IMenuBlock[] = [
+  {
     title: 'Create an account to save programs',
     items: [{
       link: '/register',
@@ -11,7 +14,25 @@ export const not_authenticated_menu = [{
       link: '/login',
       text: 'Login'
     }]
-  }];
+  }
+];
+
+export const authenticated_menu: IMenuBlock[] = [
+  {
+    title: 'Saved programs',
+    items: []
+  },{
+    title: 'Account',
+    items: [{
+      link: '/profile',
+      text: 'Profile'
+    },{
+      link: '/logout',
+      text: 'Logout'
+    }]
+  }
+]
+
 
 export const ascii_map = {
     "control": {
