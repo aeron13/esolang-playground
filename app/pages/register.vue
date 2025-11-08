@@ -77,8 +77,8 @@ const handleSubmit = () => {
     useUserStore().register(email.value, password.value).then((message) => {
         successMessage.value = message
         navigateTo('/')
-    }).catch((error) => {
-        error.value = error as string
+    }).catch((e) => {
+        error.value = e as string
     }).finally(() => {
         isSubmitting.value = false
     })

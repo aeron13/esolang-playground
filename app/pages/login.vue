@@ -45,7 +45,7 @@ import { required, email as emailValidator, helpers } from '@vuelidate/validator
 
 const email = ref('');
 const password = ref('');
-const error = ref('');
+const error = ref<string|null>(null);
 const isSubmitting = ref(false)
 const successMessage = ref('')
 const activeTab = ref(0)
@@ -72,8 +72,8 @@ const handleSubmit = () => {
     useUserStore().login(email.value, password.value).then((message) => {
         successMessage.value = message
         navigateTo('/')
-    }).catch((error) => {
-        error.value = error as string
+    }).catch((e) => {
+        error.value = e as string
     }).finally(() => {
         isSubmitting.value = false
     })
