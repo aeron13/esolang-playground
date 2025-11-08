@@ -1,4 +1,5 @@
 export interface IProgram {
+    id?: string
     language: string
     title: string|null
     code: string
@@ -16,9 +17,15 @@ export interface IUser {
     updatedAt: string
 }
 
+export interface IMenuProgram {
+    id: string
+    language: string
+    title: string
+}
+
 export interface IUserStore {
     userId: string | undefined
-    programs: IProgram[] | null
+    programs: IMenuProgram[] | null
     loading: boolean
 }
 
