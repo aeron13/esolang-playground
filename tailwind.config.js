@@ -6,7 +6,8 @@ export default {
     "./app/pages/**/*.vue",
     "./app/plugins/**/*.{js,ts}",
     "./app/app.vue",
-    "./app/error.vue",
+    "./app/stores/*.ts",
+    "./app/error.vue"
   ],
   theme: {
     fontFamily: {
