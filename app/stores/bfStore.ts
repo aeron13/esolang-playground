@@ -52,7 +52,7 @@ export const useBfStore = defineStore('bf', {
 
             const data: IProgram = {
                 language: 'bf',
-                title: 'my pr',
+                title: 'New project',
                 code : this.code,
                 userId: user.userId!,
                 deletedAt: null,
@@ -70,6 +70,12 @@ export const useBfStore = defineStore('bf', {
                 updateDoc(docRef, data as any)
             }
             console.log('Saved program ' + this.programId, data)
+        },
+        reset() {
+            this.code = ''
+            this.codeHtml = []
+            this.input = ''
+            this.output = ''
         }
     }
 })

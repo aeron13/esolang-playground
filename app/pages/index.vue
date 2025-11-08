@@ -15,10 +15,11 @@
 </template>
 <script setup lang="ts">
 import loadCodeFromId from '~/middleware/loadCodeFromId';
+import resetCode from '~/middleware/resetCode';
 
 const activeTab = ref(0)
 
 definePageMeta({
-  middleware: [loadCodeFromId],
+  middleware: [loadCodeFromId, resetCode],
 })
 </script>

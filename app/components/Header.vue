@@ -1,7 +1,7 @@
 <template>
     <header class="pt-[22px] px-6">
         <div class="flex justify-between w-full ">
-            <UiButtonSmall :text="'<>'" :disabled="!user.isAuthenticated" />
+            <UiButtonSmall :text="'<>'" :disabled="!user.isAuthenticated" @click="store.openCodeMenu" />
             <UiAppTitle />
             <UiButtonSmall :text="'<3'" @click="store.openUserMenu" />
         </div>

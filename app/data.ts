@@ -33,6 +33,16 @@ export const authenticated_menu: IMenuBlock[] = [
   }
 ]
 
+export const code_menu: IMenuBlock[] = [
+  {
+    title: 'Esolangs',
+    items: [{
+      link: '/?new=1',
+      text: 'Brainfuck'
+    }]
+  }
+];
+
 
 export const ascii_map = {
     "control": {

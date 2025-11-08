@@ -5,7 +5,7 @@
             <UiAppTitle />
         </div>
         <div class="w-full h-full flex justify-end">
-            <UiButtonSmall :text="'<>'" @click="$emit('close')" />
+            <UiButtonSmall :text="'><'" @click="$emit('close')" />
         </div>
     </div>
     <div class="py-10">

@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useFirestore } from '~/composables/useFirebase'
-import { collection, query, where, getDocs, QuerySnapshot } from "firebase/firestore";
-import type { IProgram } from '~/types'
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import type { IMenuProgram } from '~/types'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export const useUserStore = defineStore('user', {
     state: () => ({
       userId: undefined as string | undefined,
-      programs: [] as IProgram[],
+      email: undefined as string | undefined,
+      programs: [] as IMenuProgram[],
       loading: true,
     }),
   
@@ -18,6 +19,10 @@ export const useUserStore = defineStore('user', {
         onAuthStateChanged(auth, (user) => {
           this.userId = user?.uid
           this.loading = false
+          if (user) {
+            this.queryPrograms()
+            this.email = user.email ?? undefined
+          }
         })
         console.log(this.userId)
       },
@@ -61,7 +66,7 @@ export const useUserStore = defineStore('user', {
       queryPrograms() {
         return new Promise(async (resolve, reject) => {
 
-          if (!this.isAuthenticated) reject('user not auth')
+          if (!this.isAuthenticated) reject('user not logged')
 
           const { db } = useFirestore()
           const q = query(
@@ -69,11 +74,18 @@ export const useUserStore = defineStore('user', {
             where("userId", "==", this.userId), 
             where("deletedAt", "==", null)
           );
-          getDocs(q).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              console.log(doc.id, " => ", doc.data());
-            });
+          onSnapshot(q, (docs) => {
+            docs.forEach(doc => {
+              const data = doc.data()
+              this.programs.push({
+                id: doc.id,
+                language: data.language as string,
+                title: data.title as string
+              })
+            })
           })
+          resolve(this.programs)
+
         })
 
       }

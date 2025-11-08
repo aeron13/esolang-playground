@@ -14,6 +14,12 @@ export const useUiStore = defineStore('ui', {
         closeUserMenu() {
             this.userMenu = false
         },
+        openCodeMenu() {
+            this.codeMenu = true
+        },
+        closeCodeMenu() {
+            this.codeMenu = false
+        },
         closeMenus() {
             this.userMenu = false
             this.codeMenu = false
