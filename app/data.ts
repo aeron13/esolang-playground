@@ -26,9 +26,6 @@ export const authenticated_menu: IMenuBlock[] = [
     items: [{
       link: '/profile',
       text: 'Profile'
-    },{
-      link: '/logout',
-      text: 'Logout'
     }]
   }
 ]
