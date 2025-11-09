@@ -7,3 +7,9 @@
 body {
   @apply bg-dark-700 text-grey-100
 }
+
+.single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
