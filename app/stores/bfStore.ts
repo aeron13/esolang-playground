@@ -43,33 +43,83 @@ export const useBfStore = defineStore('bf', {
                 break;
             }
         },
+        saveOrUpdate() {
+            return new Promise((resolve, reject) => {
+                if (this.programId) {
+                    this.update()
+                    .then(resolve)
+                    .catch(reject)
+                } else {
+                    this.save()
+                    .then(resolve)
+                    .catch(reject)
+                }
+            })
+        },
         save() {
-            const {db} = useFirestore()
-            const user = useUserStore()
+            return new Promise((resolve, reject) => {
+                const {db} = useFirestore()
+                const user = useUserStore()
 
-            if (!user.isAuthenticated || !this.code)
-                return
+                if (!user.isAuthenticated)
+                    reject('user not logged')
+    
+                if (this.programId) {
+                    this.update().then(() => {
+                        resolve(true)
+                    }).catch((e) => {
+                        reject(e)
+                    })
+                }
 
-            const data: IProgram = {
-                language: 'bf',
-                title: 'New project',
-                code : this.code,
-                userId: user.userId!,
-                deletedAt: null,
-                public: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            }
-            if (!this.programId) {
+                if (!this.code)
+                    reject('Missing code')
+
+                const data: IProgram = {
+                    language: 'bf',
+                    title: this.title ?? 'New project',
+                    code : this.code!,
+                    userId: user.userId!,
+                    deletedAt: null,
+                    public: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                }
                 addDoc(collection(db, "programs"), data)
                 .then(ref => {
                     this.programId = ref.id
+                    resolve(true)
                 })
-            } else {
-                const docRef = doc(db, "programs", this.programId)
-                updateDoc(docRef, data as any)
-            }
-            console.log('Saved program ' + this.programId, data)
+                .catch((e) => {
+                    reject(e)
+                })
+
+            })
+
+        },
+        update() {
+            return new Promise((resolve, reject) => {
+                const {db} = useFirestore()
+                const user = useUserStore()
+    
+                if (!user.isAuthenticated)
+                    reject('user not logged')
+
+                if (!this.programId)
+                    reject('missing ID')
+
+                const docRef = doc(db, "programs", this.programId!)
+                updateDoc(docRef, {
+                    title: this.title,
+                    code : this.code,
+                    userId: user.userId!,
+                    updatedAt: new Date().toISOString()
+                }).then(() => {
+                    resolve(true)
+                }).catch((e) => {
+                    reject(e)
+                })
+            })
         },
         updateTitle(title: string) {
             return new Promise((resolve, reject) => {

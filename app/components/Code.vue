@@ -104,7 +104,7 @@
             saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
             return
         }
-        store.save()
+        store.saveOrUpdate()
         saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     }
     
