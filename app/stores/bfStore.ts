@@ -134,7 +134,7 @@ export const useBfStore = defineStore('bf', {
                 }
     
                 const docRef = doc(db, "programs", this.programId!)
-                updateDoc(docRef, {title: title})
+                updateDoc(docRef, {title: title, updatedAt: new Date().toISOString()})
                 .then(() => {
                     this.title = title
                     resolve(true)
