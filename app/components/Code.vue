@@ -15,7 +15,7 @@
             </code>
         </div>
         <div class="flex justify-between items-center pt-4 px-5">
-            <button type="button" class="underline text-sm font-semibold" @click="showAsciiChart = true">ascii chart</button>
+            <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
             <UiButtonBig text="Run >" @click="$emit('goToRun')" />
         </div>
         <div class="px-5 pt-6 pb-4">

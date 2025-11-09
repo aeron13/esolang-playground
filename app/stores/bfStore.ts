@@ -94,7 +94,35 @@ export const useBfStore = defineStore('bf', {
                 })
             })
         },
+        delete() {
+            return new Promise((resolve, reject) => {
+                const {db} = useFirestore()
+                const user = useUserStore()
+    
+                if (!user.isAuthenticated) {
+                    reject("Must be authenticated")
+                }
+                if (!this.programId) {
+                    reject("missing programId")
+                }
+    
+                const docRef = doc(db, "programs", this.programId!)
+                updateDoc(docRef, {deletedAt: new Date().toISOString()})
+                .then(() => {
+                    this.reset()
+                    const user = useUserStore()
+                    user.queryPrograms().then(() => {
+                        resolve(true)
+                    })
+                })
+                .catch(e => {
+                    reject("Problem while deleting, please retry")
+                })
+            })
+        },
         reset() {
+            this.programId = undefined
+            this.title = ''
             this.code = ''
             this.codeHtml = []
             this.input = ''
