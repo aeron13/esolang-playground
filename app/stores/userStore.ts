@@ -75,6 +75,7 @@ export const useUserStore = defineStore('user', {
             where("deletedAt", "==", null)
           );
           onSnapshot(q, (docs) => {
+            this.programs = []
             docs.forEach(doc => {
               const data = doc.data()
               this.programs.push({
