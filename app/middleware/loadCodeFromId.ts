@@ -11,9 +11,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
         const store = useBfStore()
+        store.programId = docSnap.id
         store.code = docSnap.data().code
+        store.title = docSnap.data().title
         store.parseCode()
     }
 

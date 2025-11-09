@@ -35,6 +35,7 @@ export type ITabs = {
 
 export interface ICodeStore {
     programId?: string
+    title?: string
     code: string|null
     codeHtml: string[]
 }

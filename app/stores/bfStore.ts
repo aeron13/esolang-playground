@@ -71,6 +71,29 @@ export const useBfStore = defineStore('bf', {
             }
             console.log('Saved program ' + this.programId, data)
         },
+        updateTitle(title: string) {
+            return new Promise((resolve, reject) => {
+                const {db} = useFirestore()
+                const user = useUserStore()
+    
+                if (!user.isAuthenticated) {
+                    reject("Must be authenticated")
+                }
+                if (!this.programId) {
+                    reject("missing programId")
+                }
+    
+                const docRef = doc(db, "programs", this.programId!)
+                updateDoc(docRef, {title: title})
+                .then(() => {
+                    this.title = title
+                    resolve(true)
+                })
+                .catch(e => {
+                    reject("Problem while saving, please retry")
+                })
+            })
+        },
         reset() {
             this.code = ''
             this.codeHtml = []
