@@ -13,7 +13,8 @@
                 </template>
             </UiTabs>
         </div>
-        <UiCodeTitle></UiCodeTitle>
+        <UiCodeTitle v-if="user.isAuthenticated"></UiCodeTitle>
+        <Footer v-else></Footer>
     </div>
 </template>
 <script setup lang="ts">
@@ -21,6 +22,7 @@ import loadCodeFromId from '~/middleware/loadCodeFromId';
 import resetCode from '~/middleware/resetCode';
 
 const activeTab = ref(0)
+const user = useUserStore()
 
 definePageMeta({
   middleware: [loadCodeFromId, resetCode],
