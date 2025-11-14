@@ -6,7 +6,7 @@
         </p>
         <div class="flex justify-between gap-4">
             <p class="flex-grow single-line">
-               <span v-if="store.title" class="text-green-400">{{ store.title }}</span>
+               <span v-if="store.title" class="font-mono text-sm mt-1">{{ store.title }}</span>
                <span class="text-grey-400" v-else>Add title</span>
             </p>
             <UiUnderlineButton @click="editTitle = true">
