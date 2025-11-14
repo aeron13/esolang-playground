@@ -1,6 +1,6 @@
 <template>
-<div class="absolute w-screen h-screen bg-purple-500 z-[9]">
-    <div class="pt-[22px] px-6 relative">
+<div class="absolute left-0 top-0 w-screen h-screen bg-purple-500 z-[9]">
+    <div class="pt-[22px] px-6 relative max-w-[720px] mx-auto">
         <div class="w-full left-0 absolute text-center pointer-events-none">
             <UiAppTitle />
         </div>
@@ -8,7 +8,7 @@
             <UiButtonSmall :text="'><'" @click="$emit('close')" />
         </div>
     </div>
-    <div class="py-10">
+    <div class="py-10 max-w-[720px] mx-auto">
         <slot></slot>
     </div>
 </div>
