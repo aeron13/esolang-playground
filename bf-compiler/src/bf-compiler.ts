@@ -187,6 +187,7 @@ export default class Compiler implements ICompiler {
             this.output.pop()
         }
         this.memoryPointer = 0
+        this.runPointer = 0
     }
 
 }

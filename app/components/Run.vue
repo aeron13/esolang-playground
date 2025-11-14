@@ -1,32 +1,34 @@
 <template>
-    <div class="w-full h-full">
-        <div class="bg-dark-900/50 w-full h-[330px] max-h-[50%] rounded-sm p-2 overflow-scroll">
+    <div class="w-full h-full flex flex-col">
+        <div class="bg-dark-900/50 w-full min-h-[180px] flex-grow rounded-sm p-2 overflow-scroll">
             <code ref="code-ref" v-html="store.codeHtml?.join('')" class="font-semibold text-base inline-block font-sans tracking-wider">
             </code>
         </div>
-        <div class="px-5 pt-4">
-            <div class="flex flex-wrap gap-[1px] mb-4">
-                <div v-for="(cell, i) in memory" :key="i" class="bg-dark-700 border border-purple-300/50 rounded-[3px] w-[32px] h-[25px] text-center text-sm py-[4px] leading-[1]">
-                    {{ cell }}
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <UiButtonBig text="Run >" @click="handleRun" :disabled="running || paused" />
-                <UiButtonBig :text="paused ? 'Continue' : 'Pause'" @click="paused ? handleContinue() : handlePause()" :disabled="!running && !paused" />
-                <UiButtonBig text="Stop" :disabled="!running || paused" />
+        <div class="px-5 py-4">
+            <div class="mt-1">
+                <UiInputField class="flex items-baseline gap-3" label="Input" name="input" v-model="store.input"></UiInputField>
             </div>
             <div v-if="error" class="text-orange-code mt-2">
                 {{ error }}
             </div>
             <div class="mt-5">
-                <label for="" class="block mb-2">Input</label>
-                <input type="text" id="" class="block bg-dark-900 w-full p-2" v-model="store.input" />
+                <UiRangeInputField name="speed" label="Speed"v-model="speed" />
             </div>
-            <div class="mt-5">
-                <label class="block mb-2">Output</label>
-                <div id="" class="block bg-dark-900 w-full p-2">
-                    <p class="min-h-[1em] block">
-                        {{ store.output }}
+            <div class="mt-6 flex gap-3">
+                <UiButtonBig text="Run >" @click="handleRun" :disabled="running || paused" />
+                <UiButtonBig :text="paused ? 'Continue' : 'Pause'" @click="paused ? handleContinue() : handlePause()" :disabled="!running && !paused" />
+                <UiButtonBig text="Stop" :disabled="!running || paused" />
+            </div>
+            <div class="mt-8 grid grid-cols-9 items-center justify-center gap-[1px] mb-4">
+                <div v-for="(cell, i) in memory" :key="i" :class="i === memoryPointer && 'bg-purple-300/25'" class="bg-dark-700 border border-purple-300/50 rounded-[3px] w-[32px] h-[25px] text-center text-sm py-[4px] leading-[1]">
+                    {{ cell }}
+                </div>
+            </div>
+            <div class="mt-4 flex items-baseline gap-3">
+                <div id="" class="block bg-dark-900/50 w-full p-2">
+                    <p class="min-h-[3rem] block">
+                        <span v-if="store.output">{{ store.output }}</span>
+                        <span v-else class="opacity-50">Output</span>
                     </p>
                 </div>
             </div>
@@ -45,9 +47,11 @@ const code = computed(() => {
 })
 const memory = ref<number[]>()
 const pointer = ref<number>(0)
+const memoryPointer = ref<number>(0)
 const error = ref<string>()
 const running = ref<boolean>(false)
 const paused = ref<boolean>(false)
+const speed = ref('0')
 
 const codeRef = useTemplateRef('code-ref')
 
@@ -63,6 +67,7 @@ watch(code, () => {
 const handleRun = () => {
     error.value = ''
     store.output = ''
+    pointer.value = 0
     running.value = true
     try {
         compiler.value!.clean()
@@ -86,19 +91,21 @@ const handleContinue = () => {
 }
 
 const runCode = async () => {
-    try {
-        while (store.code!.length > pointer.value && running.value) {
-            await runStep()
+    if (+speed.value === 0) {
+        try {
+            compiler.value?.compile()
+        } catch(e) {
+            error.value = e as string
         }
-    } catch(e) {
-        error.value = e as string
+    } else { 
+        try {
+            while (store.code!.length > pointer.value && running.value) {
+                await runStep()
+            }
+        } catch(e) {
+            error.value = e as string
+        }
     }
-
-    // try {
-    //     compiler.value?.compile(store.input)
-    // } catch(e) {
-    //     error.value = e as string
-    // }
 
     running.value = false
     store.output = compiler.value?.output.join('')
@@ -110,7 +117,8 @@ const runStep = async () => {
     codeRef.value?.querySelector(`#t${pointer.value}`)?.classList.add('active')
     const { next } = compiler.value!.runNextChar()
     memory.value = [...compiler.value!.memory]
-    await new Promise(r => {setTimeout(r, 100)});
+    memoryPointer.value = compiler.value!.memoryPointer
+    await new Promise(r => {setTimeout(r, 100 * +speed.value)});
     pointer.value = next
 }
 
