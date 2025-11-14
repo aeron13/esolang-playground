@@ -94,6 +94,8 @@ const runCode = async () => {
     if (+speed.value === 0) {
         try {
             compiler.value?.compile()
+            memory.value = [...compiler.value!.memory]
+            memoryPointer.value = compiler.value!.memoryPointer
         } catch(e) {
             error.value = e as string
         }
@@ -106,10 +108,8 @@ const runCode = async () => {
             error.value = e as string
         }
     }
-
     running.value = false
     store.output = compiler.value?.output.join('')
-
 }
 
 const runStep = async () => {
