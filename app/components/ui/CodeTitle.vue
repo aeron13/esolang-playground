@@ -17,7 +17,7 @@
             </UiUnderlineButton>
         </div>
         <UiModal v-if="editTitle" @close="editTitle = false">
-            <form class="flex flex-col gap-4 px-4">
+            <form class="flex flex-col gap-4 px-4 mx-auto md:flex-wrap max-w-xl">
                 <UiInputField 
                     class="flex-grow" 
                     label="Title" 
@@ -26,7 +26,7 @@
                     :show-error="v$.title.$dirty && v$.title.$error" 
                     :error-message="v$.title.$errors[0]?.$message as string" 
                 ></UiInputField>
-                <UiButtonSmall text="Save" @click="handleSubmit" :disabled="isSubmitting"></UiButtonSmall>
+                <UiButtonSmall class="md:w-fit" text="Save" @click="handleSubmit" :disabled="isSubmitting"></UiButtonSmall>
                 <div v-if="error" class="text-orange-code text-sm">{{ error }}</div>
             </form>
         </UiModal>
