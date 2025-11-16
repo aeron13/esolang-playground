@@ -34,7 +34,6 @@ input[type="range"] {
   appearance: none;
   background: transparent;
   cursor: pointer;
-  width: 25rem;
 }
 
 /* Removes default focus */

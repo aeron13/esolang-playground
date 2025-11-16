@@ -10,7 +10,7 @@
                         <h1 class="block font-mono text-lg max-w-[200px]">Profile</h1>
                     </div>
                     <div>
-                        <p>Email</p>
+                        <p class="text-green-300 text-sm">Email</p>
                         <p>{{ user.email }}</p>
                     </div>
                     <UiButtonSmall class="mt-5" text="Logout" @click="logout" />

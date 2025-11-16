@@ -4,7 +4,7 @@
     <main class="flex-grow">
       <NuxtPage />
     </main>
-    <Footer v-if="showFooter"></Footer>
+    <Footer class="px-4" v-if="showFooter"></Footer>
     <UiMenu v-show="store.userMenu" @close="store.closeUserMenu">
       <UiMenuNav :menu-list="userMenu"/>
     </UiMenu>
