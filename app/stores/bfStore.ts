@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { IBfCodeStore, IProgram, ProgramModel, ICreateProgramData } from '~/types'
 import Program from '~/models/program'
+import { hello_world_program } from '~/data'
 
 export const useBfStore = defineStore('bf', {
     state: (): IBfCodeStore => ({
@@ -127,6 +128,11 @@ export const useBfStore = defineStore('bf', {
                 .then(resolve)
                 .catch(reject)
             })
+        },
+        setDummyProgram() {
+            this.reset()
+            this.code = hello_world_program
+            this.parseCode()
         },
         delete() {
             return new Promise((resolve, reject) => {

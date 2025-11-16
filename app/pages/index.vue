@@ -5,6 +5,9 @@
                 :tabs="[{ title: 'Code'}, { title: 'Run' }]" 
                 v-model="activeTab"
             >
+                <template #header-link>
+                    <button @click="store.setDummyProgram" class="text-xs uppercase">+ Example code</button>
+                </template>
                 <template #tab1>
                     <Code @go-to-run="activeTab = 1"></Code>
                 </template>
@@ -13,8 +16,9 @@
                 </template>
             </UiTabs>
         </div>
-        <UiCodeTitle v-if="user.isAuthenticated && program.programId"></UiCodeTitle>
-        <Footer v-else></Footer>
+        <UiCodeTitle v-if="user.isAuthenticated && store.programId"></UiCodeTitle>
+        <Footer v-else>
+        </Footer>
     </div>
 </template>
 <script setup lang="ts">
@@ -23,7 +27,7 @@ import resetCode from '~/middleware/resetCode';
 
 const activeTab = ref(0)
 const user = useUserStore()
-const program = useBfStore()
+const store = useBfStore()
 
 definePageMeta({
   middleware: [loadCodeFromId, resetCode],

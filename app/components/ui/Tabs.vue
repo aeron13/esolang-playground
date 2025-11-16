@@ -1,7 +1,8 @@
 <template>
     <div class="flex flex-col h-full w-full mt-1">
-        <div>
-            <button 
+        <div class="w-full flex justify-between">
+            <div>
+                <button 
                 v-for="tab, index in tabs" :key="index" 
                 type="button" 
                 class="border-green-300 border rounded-t-[8px] pt-1 px-4 pb-2 tab-button relative font-medium text-[14px]"
@@ -11,6 +12,10 @@
             >
                 {{ tab.title }}
             </button>
+            </div>
+            <div>
+                <slot name="header-link"></slot>
+            </div>
         </div>
         <div class="flex-grow border border-green-300 rounded-[4px] bg-dark-700 -mt-1 p-1" :style="`z-index: ${tabs.length + 1}`">
             <div v-for="tab, index in tabs" :key="index" v-show="activeTab === index" class="w-full h-full">
