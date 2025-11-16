@@ -19,7 +19,7 @@
                 <UiButtonBig :text="paused ? 'Continue' : 'Pause'" @click="paused ? handleContinue() : handlePause()" :disabled="!running && !paused" />
                 <UiButtonBig text="Stop" :disabled="!running || paused" />
             </div>
-            <div class="mt-8 grid grid-cols-9 items-center justify-center gap-[1px] mb-4">
+            <div class="mt-8 w-fit grid grid-cols-9 md:flex items-center justify-center gap-[1px] mb-4">
                 <div v-for="(cell, i) in memory" :key="i" :class="i === memoryPointer && 'bg-purple-300/25'" class="bg-dark-700 border border-purple-300/50 rounded-[3px] w-[32px] h-[25px] text-center text-sm py-[4px] leading-[1]">
                     {{ cell }}
                 </div>
