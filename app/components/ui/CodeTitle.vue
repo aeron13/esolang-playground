@@ -1,5 +1,5 @@
 <template>
-    <div v-if="store.programId" class="pb-10 pt-2">
+    <div class="pb-10 pt-2">
             
         <p class="text-xs">
             Project:
