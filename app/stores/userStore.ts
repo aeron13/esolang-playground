@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { useFirestore } from '~/composables/useFirebase'
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+
+import Program from '~/models/program';
+
 import type { IMenuProgram } from '~/types'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -66,26 +67,19 @@ export const useUserStore = defineStore('user', {
       queryPrograms() {
         return new Promise(async (resolve, reject) => {
 
-          if (!this.isAuthenticated) reject('user not logged')
-
-          const { db } = useFirestore()
-          const q = query(
-            collection(db, "programs"), 
-            where("userId", "==", this.userId), 
-            where("deletedAt", "==", null)
-          );
-          onSnapshot(q, (docs) => {
-            this.programs = []
-            docs.forEach(doc => {
-              const data = doc.data()
-              this.programs.push({
-                id: doc.id,
-                language: data.language as string,
-                title: data.title as string
-              })
+          if (!this.isAuthenticated || !this.userId) reject('user not logged')
+          
+          new Program().getAll(this.userId!)
+          .then(programs => {
+            this.programs = programs.map(obj => {
+              return {
+                id: obj.id!,
+                language: obj.language,
+                title: obj.title
+              }
             })
+            resolve(true)
           })
-          resolve(this.programs)
 
         })
 

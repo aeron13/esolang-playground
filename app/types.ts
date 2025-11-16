@@ -1,13 +1,38 @@
 export interface IProgram {
     id?: string
     language: string
-    title: string|null
+    title: string
     code: string
     createdAt: string
     updatedAt: string
     userId: string
     deletedAt: string|null
     public: boolean
+}
+
+export interface ICreateProgramData {
+    userId: string
+    language?: string
+    title?: string
+    code: string
+}
+
+export interface IUpdateProgramData {
+    id: string,
+    code: string
+}
+
+export interface ProgramModel {
+    // id?: string
+    // data?: IProgram
+    create: (data:ICreateProgramData) => Promise<string>
+    get: (id:string) => Promise<IProgram>
+    getAll: (userId:string) => Promise<IProgram[]>
+    update: (data:IUpdateProgramData) => Promise<boolean>
+    updateTitle: (id:string, title:string) => Promise<boolean>
+    // makePublic: (id:string) => Promise<boolean>
+    // makePrivate: (id:string) => Promise<boolean>    
+    delete: (id:string) => Promise<boolean>
 }
 
 export interface IUser {
@@ -36,7 +61,7 @@ export type ITabs = {
 export interface ICodeStore {
     programId?: string
     title?: string
-    code: string|null
+    code?: string
     codeHtml: string[]
 }
 

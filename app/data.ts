@@ -1,5 +1,7 @@
 import type { IMenuBlock } from "./types";
 
+export const fallback_title = 'New project'
+
 export const not_authenticated_menu: IMenuBlock[] = [
   {
     title: 'Create an account to save programs',
