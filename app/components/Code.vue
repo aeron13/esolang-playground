@@ -16,7 +16,8 @@
         </div>
         <div class="flex justify-between items-center pt-4 px-5">
             <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
-            <UiButtonBig text="Run >" @click="$emit('goToRun')" />
+            <UiButtonBig v-if="user.isAuthenticated" text="Save" @click="store.saveOrUpdate" />
+            <UiButtonBig v-else text="Run >" @click="$emit('goToRun')" />
         </div>
         <div class="px-5 pt-6 pb-4">
             <UiKeyboard @click="handleKeyboardClick" class="mx-auto"></UiKeyboard>
@@ -29,6 +30,7 @@
     import { useUserStore } from '~/stores/userStore'
 
     const store = useBfStore()
+    const user = useUserStore()
     const showAsciiChart = ref(false)
     const pasteListener = ref()
 
@@ -95,6 +97,7 @@
     }
 
     const saveOnInterval = (lastVal:number) => {
+        console.log('save')
         if (lastV.value === lastVal) {
             saveTimer.value = setTimeout(() => {saveOnInterval(lastVal)}, 5000)
             return

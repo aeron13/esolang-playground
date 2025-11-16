@@ -125,7 +125,10 @@ export const useBfStore = defineStore('bf', {
                 }
 
                 new Program().updateTitle(this.programId!, title)
-                .then(resolve)
+                .then(() => {
+                    this.title = title
+                    resolve(true)
+                })
                 .catch(reject)
             })
         },

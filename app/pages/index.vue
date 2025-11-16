@@ -6,7 +6,7 @@
                 v-model="activeTab"
             >
                 <template #header-link>
-                    <button @click="store.setDummyProgram" class="text-xs uppercase">+ Example code</button>
+                    <UiUnderlineButton @click="store.setDummyProgram" class="text-xs">+ Example code</UiUnderlineButton>
                 </template>
                 <template #tab1>
                     <Code @go-to-run="activeTab = 1"></Code>
