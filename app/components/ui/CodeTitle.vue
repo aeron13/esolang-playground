@@ -57,6 +57,10 @@ const rules = computed(() => ({
 }))
 const v$ = useVuelidate(rules, { title})
 
+onMounted(() => {
+    title.value = store.title ?? ''
+})
+
 const handleSubmit = () => {
     v$.value.$touch()
     if (v$.value.$invalid) {
