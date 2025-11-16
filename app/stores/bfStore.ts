@@ -39,7 +39,7 @@ export const useBfStore = defineStore('bf', {
                     this.codeHtml.push(`<span class="text-blue-code" id="${charId}">${char}</span>`)
                 break;
                 default:
-                    this.codeHtml.push(`<span class="text-grey-400">${char}</span>`)
+                    this.codeHtml.push(`<span class="text-grey-400" id="${charId}">${char}</span>`)
                 break;
             }
         },

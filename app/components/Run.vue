@@ -12,7 +12,7 @@
                 {{ error }}
             </div>
             <div class="mt-5">
-                <UiRangeInputField name="speed" label="Speed"v-model="speed" />
+                <UiRangeInputField name="delay" label="Delay" v-model="delay" />
             </div>
             <div class="mt-6 flex gap-3">
                 <UiButtonBig text="Run >" @click="handleRun" :disabled="running || paused" />
@@ -51,7 +51,7 @@ const memoryPointer = ref<number>(0)
 const error = ref<string>()
 const running = ref<boolean>(false)
 const paused = ref<boolean>(false)
-const speed = ref('0')
+const delay = ref('0')
 
 const codeRef = useTemplateRef('code-ref')
 
@@ -91,7 +91,7 @@ const handleContinue = () => {
 }
 
 const runCode = async () => {
-    if (+speed.value === 0) {
+    if (+delay.value === 0) {
         try {
             compiler.value?.compile()
             memory.value = [...compiler.value!.memory]
@@ -118,7 +118,7 @@ const runStep = async () => {
     const { next } = compiler.value!.runNextChar()
     memory.value = [...compiler.value!.memory]
     memoryPointer.value = compiler.value!.memoryPointer
-    await new Promise(r => {setTimeout(r, 100 * +speed.value)});
+    await new Promise(r => {setTimeout(r, 100 * +delay.value)});
     pointer.value = next
 }
 
