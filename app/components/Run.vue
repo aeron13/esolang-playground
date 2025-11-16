@@ -96,6 +96,7 @@ const runCode = async () => {
             compiler.value?.compile()
             memory.value = [...compiler.value!.memory]
             memoryPointer.value = compiler.value!.memoryPointer
+            store.output = compiler.value?.output.join('')
         } catch(e) {
             error.value = e as string
         }
@@ -109,7 +110,6 @@ const runCode = async () => {
         }
     }
     running.value = false
-    store.output = compiler.value?.output.join('')
 }
 
 const runStep = async () => {
@@ -118,6 +118,7 @@ const runStep = async () => {
     const { next } = compiler.value!.runNextChar()
     memory.value = [...compiler.value!.memory]
     memoryPointer.value = compiler.value!.memoryPointer
+    store.output = compiler.value?.output.join('')
     await new Promise(r => {setTimeout(r, 100 * +delay.value)});
     pointer.value = next
 }
