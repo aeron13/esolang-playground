@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import type { IBfCodeStore, IProgram, ProgramModel, ICreateProgramData } from '~/types'
+import type { IBfCodeStore } from '~/types'
 import Program from '~/models/program'
-import { hello_world_program } from '~/data'
+import { fallback_title, hello_world_program } from '~/data'
 
 export const useBfStore = defineStore('bf', {
     state: (): IBfCodeStore => ({
@@ -45,13 +45,20 @@ export const useBfStore = defineStore('bf', {
         },
         load(id: string) {
             return new Promise((resolve, reject) => {
+                const user = useUserStore()
+
                 new Program().get(id)
                 .then((data) => {
-                    this.programId = data.id
-                    this.code = data.code
-                    this.title = data.title
-                    this.parseCode()
-                    resolve(true)
+                    if ( (user.isAuthenticated && data.userId === user.userId) || data.public === true) {
+                        this.programId = data.id
+                        this.code = data.code
+                        this.title = data.title
+                        this.parseCode()
+                        resolve(true)
+                    } else {
+                        reject('Unauthorized')
+                    }
+
                 })
                 .catch(e => reject(e))
             })
@@ -80,6 +87,7 @@ export const useBfStore = defineStore('bf', {
                 if (!this.code)
                     reject('Missing code')
 
+                if (!this.title) this.title = fallback_title
                 new Program().create({
                     title: this.title,
                     code: this.code!,
@@ -105,7 +113,9 @@ export const useBfStore = defineStore('bf', {
 
                 new Program().update({
                     id: this.programId!, 
-                    code: this.code ?? ''
+                    code: this.code ?? '',
+                    title: this.title ?? '',
+                    public: this.isPublic ?? false
                 })
                 .then(() => {
                     resolve(true)
@@ -113,25 +123,25 @@ export const useBfStore = defineStore('bf', {
                 .catch((e) => reject(e))
             })
         },
-        updateTitle(title: string) {
-            return new Promise((resolve, reject) => {
-                const user = useUserStore()
+        // updateTitle(title: string) {
+        //     return new Promise((resolve, reject) => {
+        //         const user = useUserStore()
     
-                if (!user.isAuthenticated) {
-                    reject("Must be authenticated")
-                }
-                if (!this.programId) {
-                    reject("missing programId")
-                }
+        //         if (!user.isAuthenticated) {
+        //             reject("Must be authenticated")
+        //         }
+        //         if (!this.programId) {
+        //             reject("missing programId")
+        //         }
 
-                new Program().updateTitle(this.programId!, title)
-                .then(() => {
-                    this.title = title
-                    resolve(true)
-                })
-                .catch(reject)
-            })
-        },
+        //         new Program().updateTitle(this.programId!, title)
+        //         .then(() => {
+        //             this.title = title
+        //             resolve(true)
+        //         })
+        //         .catch(reject)
+        //     })
+        // },
         setDummyProgram() {
             this.reset()
             this.code = hello_world_program

@@ -3,7 +3,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import Program from '~/models/program';
 
-import type { IMenuProgram } from '~/types'
+import type { IMenuProgram, IProgram } from '~/types'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export const useUserStore = defineStore('user', {
@@ -67,10 +67,10 @@ export const useUserStore = defineStore('user', {
       queryPrograms() {
         return new Promise(async (resolve, reject) => {
 
-          if (!this.isAuthenticated || !this.userId) reject('user not logged')
-          
-          new Program().getAll(this.userId!)
-          .then(programs => {
+          if (!this.isAuthenticated || !this.userId) 
+            reject('user not logged')
+
+          new Program().getOnSnapshot(this.userId!, (programs: IProgram[]) => {
             this.programs = programs.map(obj => {
               return {
                 id: obj.id!,
@@ -78,11 +78,9 @@ export const useUserStore = defineStore('user', {
                 title: obj.title
               }
             })
-            resolve(true)
-          })
+          }).then(resolve)
 
         })
-
       }
 
     },

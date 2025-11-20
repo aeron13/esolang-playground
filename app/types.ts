@@ -18,9 +18,13 @@ export interface ICreateProgramData {
 }
 
 export interface IUpdateProgramData {
-    id: string,
+    id: string
     code: string
+    title?: string
+    public?: boolean
 }
+
+export type ProgramSnapshotCallback = (programs: IProgram[]) => any
 
 export interface ProgramModel {
     // id?: string
@@ -28,12 +32,14 @@ export interface ProgramModel {
     create: (data:ICreateProgramData) => Promise<string>
     get: (id:string) => Promise<IProgram>
     getAll: (userId:string) => Promise<IProgram[]>
+    getOnSnapshot: (userId:string, fn:ProgramSnapshotCallback) => Promise<boolean>
     update: (data:IUpdateProgramData) => Promise<boolean>
     updateTitle: (id:string, title:string) => Promise<boolean>
     // makePublic: (id:string) => Promise<boolean>
     // makePrivate: (id:string) => Promise<boolean>    
     delete: (id:string) => Promise<boolean>
 }
+
 
 export interface IUser {
     id: string
@@ -61,6 +67,7 @@ export type ITabs = {
 export interface ICodeStore {
     programId?: string
     title?: string
+    isPublic?: boolean
     code?: string
     codeHtml: string[]
 }

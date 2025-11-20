@@ -6,9 +6,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     const store = useBfStore()
+
     store.load(to.query.code as string)
     .catch(e => {
         console.log(e)
+        navigateTo('/')
     })
 
 })

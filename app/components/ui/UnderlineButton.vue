@@ -1,5 +1,5 @@
 <template>
-<button type="button" class="hover:underline uppercase pt-1" @click="$emit('click')">
+<button type="button" class="border-b border-grey-400 uppercase pt-1" @click="$emit('click')">
     <slot></slot>
 </button>
 </template>

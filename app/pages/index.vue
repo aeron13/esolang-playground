@@ -5,8 +5,14 @@
                 :tabs="[{ title: 'Code'}, { title: 'Run' }]" 
                 v-model="activeTab"
             >
-                <template #header-link>
-                    <UiUnderlineButton @click="store.setDummyProgram" class="text-xs">+ Example code</UiUnderlineButton>
+                <template #header-text>
+                    <p v-if="store.programId" class="single-line text-right block text-sm text-grey-400">
+                        <template v-if="store.title">{{ store.title }}</template>
+                        <template v-else>Add title</template>
+                    </p>
+                    <UiUnderlineButton v-else class="text-xs" @click="store.setDummyProgram">
+                        + EXAMPLE CODE
+                    </UiUnderlineButton>
                 </template>
                 <template #tab1>
                     <Code @go-to-run="activeTab = 1"></Code>
@@ -16,9 +22,19 @@
                 </template>
             </UiTabs>
         </div>
-        <UiCodeTitle v-if="user.isAuthenticated && store.programId"></UiCodeTitle>
-        <Footer v-else>
-        </Footer>
+        <UiCodeFooter 
+            v-if="user.isAuthenticated && store.programId"
+            @edit="editTitle = true"
+            @delete="confirmDelete = true"
+        >
+        </UiCodeFooter>
+        <Footer v-else></Footer>
+        <UiModal v-if="editTitle && user.isAuthenticated && store.programId" @close="editTitle = false">
+            <FormsEditProgram v-model="editTitle"></FormsEditProgram>
+        </UiModal>
+        <UiModal v-if="confirmDelete && user.isAuthenticated && store.programId" @close="confirmDelete = false">
+            <FormsConfirmDelete v-model="confirmDelete"></FormsConfirmDelete>
+        </UiModal>
     </div>
 </template>
 <script setup lang="ts">
@@ -28,6 +44,9 @@ import resetCode from '~/middleware/resetCode';
 const activeTab = ref(0)
 const user = useUserStore()
 const store = useBfStore()
+
+const editTitle = ref(false)
+const confirmDelete = ref(false)
 
 definePageMeta({
   middleware: [loadCodeFromId, resetCode],

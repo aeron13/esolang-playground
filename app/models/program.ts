@@ -1,19 +1,18 @@
 import type { IProgram, ProgramModel, ICreateProgramData, IUpdateProgramData } from "~/types";
 import { getDoc, addDoc, collection, doc, updateDoc, query, where, onSnapshot } from "firebase/firestore";
-import { fallback_title } from "~/data";
 
 export default class Program implements ProgramModel {
 
     constructor() {}
 
     create(data: ICreateProgramData): Promise<string> {
-
         return new Promise((resolve, reject) => {
             const {db} = useFirestore()
+
             addDoc(collection(db, "programs"), {
                 language: 'bf',
                 code: data.code ?? '',
-                title: data.title ?? fallback_title,
+                title: data.title,
                 userId: data.userId,
                 public: false,
                 createdAt: new Date().toISOString(),
@@ -61,9 +60,8 @@ export default class Program implements ProgramModel {
                 where("userId", "==", userId), 
                 where("deletedAt", "==", null)
             );
-            let programs: IProgram[] = [];
-
             onSnapshot(q, (docs) => {
+                let programs: IProgram[] = [];
                 docs.forEach(doc => {
                     const data = doc.data() as IProgram
                     programs.push({
@@ -72,6 +70,33 @@ export default class Program implements ProgramModel {
                     })
                 })
                 resolve(programs)
+            })
+        })
+    }
+
+    getOnSnapshot(userId:string, callback:any): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            
+            if (!userId)
+                reject("missing userID")
+            
+            const { db } = useFirestore()
+            const q = query(
+                collection(db, "programs"), 
+                where("userId", "==", userId), 
+                where("deletedAt", "==", null)
+            );
+            onSnapshot(q, (docs) => {
+                let programs: IProgram[] = [];
+                docs.forEach(doc => {
+                    const data = doc.data() as IProgram
+                    programs.push({
+                        id: doc.id,
+                        ...data
+                    })
+                })
+                callback(programs)
+                resolve(true)
             })
         })
     }
@@ -87,6 +112,8 @@ export default class Program implements ProgramModel {
             const docRef = doc(db, "programs", data.id)
             updateDoc(docRef, {
                 code: data.code,
+                title: data.title,
+                public: data.public,
                 updatedAt: new Date().toISOString()
             }).then(() => {
                 resolve(true)

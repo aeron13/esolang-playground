@@ -16,8 +16,11 @@
         </div>
         <div class="flex justify-between items-center pt-4 px-5">
             <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
-            <UiButtonBig v-if="user.isAuthenticated" text="Save" @click="store.saveOrUpdate" />
-            <UiButtonBig v-else text="Run >" @click="$emit('goToRun')" />
+            <div>
+                <UiButtonBig v-if="user.isAuthenticated" :text="isSaving ? 'Saving' : 'Save'" @click="handleSave" :disabled="isSaving" />
+                <UiButtonBig v-else text="Run >" @click="$emit('goToRun')" />
+                <p v-if="error">{{ error }}</p>
+            </div>
         </div>
         <div class="px-5 pt-6 pb-4">
             <UiKeyboard @click="handleKeyboardClick" class="mx-auto"></UiKeyboard>
@@ -38,6 +41,8 @@
     const selectionStart = ref(0)
     const selectionEnd = ref(0)
     const saveTimer = ref()
+    const isSaving = ref(false)
+    const error = ref('')
     const lastV = ref(0)
 
     defineEmits(['goToRun'])
@@ -96,6 +101,18 @@
         })
     }
 
+    const handleSave = () => {
+        isSaving.value = true
+        store.saveOrUpdate()
+        .then(() => {
+            isSaving.value = false
+        })
+        .catch(e => {
+            error.value = e as string
+            isSaving.value = false
+        })
+    }
+
     const saveOnInterval = (lastVal:number) => {
         console.log('save')
         if (lastV.value === lastVal) {
@@ -113,7 +130,7 @@
     
     onMounted(() => {
         pasteListener.value = window.addEventListener('paste', handlePaste)
-        saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
+        // saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     })
 
     onBeforeUnmount(() => {
