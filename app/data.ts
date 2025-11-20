@@ -37,7 +37,8 @@ export const code_menu: IMenuBlock[] = [
     title: 'Esolangs',
     items: [{
       link: '/?new=1',
-      text: 'Brainfuck'
+      text: 'Brainfuck',
+      ctaText: 'create new >'
     }]
   }
 ];

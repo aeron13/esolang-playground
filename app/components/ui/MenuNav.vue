@@ -5,11 +5,11 @@
         <p class="text-green-300">{{ menuBlock.title }}</p>
         <ul>
             <li v-for="(menuItem, j) in menuBlock.items" :key="j" class="w-full border-b border-purple-300">
-            <nuxt-link :to="menuItem.link" @click="store.closeMenus" class="py-4 w-full flex justify-between gap-[10px]">
+            <nuxt-link :to="menuItem.link" @click="store.closeMenus" class="py-4 w-full flex justify-between gap-[10px] items-baseline">
                 <span class="text-lg font-medium">
                     {{ menuItem.text }}
                 </span>
-                <span>></span>
+                <span v-html="menuItem.ctaText ?? '>'" class="text-sm"></span>
             </nuxt-link>
             </li>
         </ul>

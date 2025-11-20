@@ -80,6 +80,7 @@ export interface IBfCodeStore extends ICodeStore {
 export interface IMenuItem {
     link: string
     text: string
+    ctaText?: string
 }
 
 export interface IMenuBlock {
