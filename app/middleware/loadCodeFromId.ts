@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     const store = useBfStore()
-
+    store.reset()
     store.load(to.query.code as string)
     .catch(e => {
         console.log(e)
