@@ -22,9 +22,11 @@
 <script setup lang="ts">
 
 const user = useUserStore()
+const ui = useUiStore()
 
 const logout = () => {
     user.logout()
+    ui.setToast('Logged out successfully')
     navigateTo('/')
 }
 

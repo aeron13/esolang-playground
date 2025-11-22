@@ -39,10 +39,10 @@
     </div>
 </template>
 <script setup lang="ts">
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import useVuelidate from '@vuelidate/core'
 import { required, email as emailValidator, helpers } from '@vuelidate/validators'
 
+const ui = useUiStore()
 const email = ref('');
 const password = ref('');
 const error = ref<string|null>(null);
@@ -71,6 +71,7 @@ const handleSubmit = () => {
     error.value = ''
     useUserStore().login(email.value, password.value).then((message) => {
         successMessage.value = message
+        ui.setToast(message)
         navigateTo('/')
     }).catch((e) => {
         error.value = e as string

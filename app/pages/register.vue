@@ -43,6 +43,7 @@ import useVuelidate from '@vuelidate/core'
 import { required, email as emailValidator, minLength, helpers } from '@vuelidate/validators'
 import { useUserStore } from '~/stores/userStore'
 
+const ui = useUiStore()
 const email = ref('');
 const password = ref('');
 const error = ref('');
@@ -76,6 +77,7 @@ const handleSubmit = () => {
 
     useUserStore().register(email.value, password.value).then((message) => {
         successMessage.value = message
+        ui.setToast(message)
         navigateTo('/')
     }).catch((e) => {
         error.value = e as string
