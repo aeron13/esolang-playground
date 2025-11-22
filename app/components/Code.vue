@@ -17,7 +17,7 @@
         <div class="flex justify-between items-center pt-4 px-5 pb-3">
             <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
             <div>
-                <UiButtonBig v-if="user.isAuthenticated" :text="isSaving ? 'Saving' : 'Save'" @click="handleSave" :disabled="isSaving" />
+                <UiButtonBig v-if="user.isAuthenticated" :text="isSaving ? 'Saving' : 'Save'" @click.prevent="handleSave" :disabled="isSaving" />
                 <UiButtonBig v-else text="Run >" @click="$emit('goToRun')" />
             </div>
         </div>
@@ -34,6 +34,7 @@
 
     const store = useBfStore()
     const user = useUserStore()
+    const ui = useUiStore()
     const showAsciiChart = ref(false)
     const pasteListener = ref()
 
@@ -106,6 +107,7 @@
         store.saveOrUpdate()
         .then(() => {
             isSaving.value = false
+            ui.setToast('Saved')
         })
         .catch(e => {
             error.value = e as string
