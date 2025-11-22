@@ -14,15 +14,15 @@
                 <span v-html="store.codeHtml.join('')"></span>
             </code>
         </div>
-        <div class="flex justify-between items-center pt-4 px-5">
+        <div class="flex justify-between items-center pt-4 px-5 pb-3">
             <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
             <div>
                 <UiButtonBig v-if="user.isAuthenticated" :text="isSaving ? 'Saving' : 'Save'" @click="handleSave" :disabled="isSaving" />
                 <UiButtonBig v-else text="Run >" @click="$emit('goToRun')" />
-                <p v-if="error">{{ error }}</p>
             </div>
         </div>
-        <div class="px-5 pt-6 pb-4">
+        <p v-if="error" class="px-5 text-orange-code text-sm">{{ error }}</p>
+        <div class="px-5 pt-3 pb-4">
             <UiKeyboard @click="handleKeyboardClick" class="mx-auto"></UiKeyboard>
         </div>
     </div>
