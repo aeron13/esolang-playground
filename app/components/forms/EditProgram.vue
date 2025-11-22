@@ -24,6 +24,7 @@ import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
 const store = useBfStore()
+const uiStore = useUiStore()
 const title = ref('')
 const isPublic = ref<boolean>()
 const error = ref<string|null>(null);
@@ -53,6 +54,7 @@ const handleSubmit = () => {
     store.title = title.value
     store.isPublic = isPublic.value
     store.update().then(() => {
+        uiStore.setToast(`Updated`)
         showForm.value = false
     }).catch((e) => {
         error.value = e as string

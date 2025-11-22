@@ -11,6 +11,7 @@
     <UiMenu v-show="store.codeMenu" @close="store.closeCodeMenu">
       <UiMenuNav :menu-list="code_menu"/>
     </UiMenu>
+    <UiToast v-show="store.toast" v-html="store.toast"></UiToast>
   </div>
 </template>
 <script setup lang=ts>
