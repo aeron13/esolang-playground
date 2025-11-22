@@ -5,6 +5,7 @@ export const useUiStore = defineStore('ui', {
         mode: 'dark',
         userMenu: false,
         codeMenu: false,
+        toast: ''
     }),
 
     actions: {
@@ -23,6 +24,13 @@ export const useUiStore = defineStore('ui', {
         closeMenus() {
             this.userMenu = false
             this.codeMenu = false
+        },
+        setToast(val:string) {
+            this.toast = val
+            setTimeout(this.resetToast, 1600)
+        },
+        resetToast() {
+            this.toast = ''
         }
     }
 })
