@@ -1,10 +1,10 @@
 # Esolang Playground
 
-An interactive IDE for esoteric programming languages, featuring a Brainfuck compiler and interpreter.
-- mobile optimized
-- contains an ASCII chart to help you code
+An **interactive IDE for esoteric programming languages**, featuring a Brainfuck compiler and interpreter.
+- optimized for **coding on mobile devices**
+- contains an **ASCII chart** to help you code
 - save programs in private or public mode
-- inspired by [Marcos Minond](https://minond.github.io/brainfuck/) where I learnt to code in Brainfuck :)
+- inspired by [Marcos Minond](https://minond.github.io/brainfuck/) and his editor, where I learnt to code in Brainfuck
 
 ## Try it
 Live at: [esolang-playground.web.app](https://esolang-playground.web.app)
