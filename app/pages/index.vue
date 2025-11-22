@@ -10,7 +10,7 @@
                         <template v-if="store.title">{{ store.title }}</template>
                         <template v-else>Add title</template>
                     </p>
-                    <UiUnderlineButton v-else class="text-xs" @click="store.setDummyProgram">
+                    <UiUnderlineButton v-else class="text-xs" :underlined="false" @click="store.setDummyProgram">
                         + EXAMPLE CODE
                     </UiUnderlineButton>
                 </template>
@@ -26,11 +26,15 @@
             v-if="user.isAuthenticated && store.programId"
             @edit="editTitle = true"
             @delete="confirmDelete = true"
+            @copy="confirmShare = true"
         >
         </UiCodeFooter>
         <Footer v-else></Footer>
         <UiModal v-if="editTitle && user.isAuthenticated && store.programId" @close="editTitle = false">
             <FormsEditProgram v-model="editTitle"></FormsEditProgram>
+        </UiModal>
+        <UiModal v-if="confirmShare && user.isAuthenticated && store.programId" @close="confirmShare = false">
+            <FormsConfirmShare v-model="confirmShare"></FormsConfirmShare>
         </UiModal>
         <UiModal v-if="confirmDelete && user.isAuthenticated && store.programId" @close="confirmDelete = false">
             <FormsConfirmDelete v-model="confirmDelete"></FormsConfirmDelete>
@@ -47,9 +51,11 @@ const store = useBfStore()
 
 const editTitle = ref(false)
 const confirmDelete = ref(false)
+const confirmShare = ref(false)
 
 definePageMeta({
   middleware: [loadCodeFromId, resetCode],
   hideFooter: true
 })
+
 </script>

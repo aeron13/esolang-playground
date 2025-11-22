@@ -85,5 +85,6 @@ export interface IMenuItem {
 
 export interface IMenuBlock {
     title: string
+    icon?: string
     items: IMenuItem[]
 }

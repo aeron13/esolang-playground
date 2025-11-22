@@ -54,7 +54,6 @@ const handleSubmit = () => {
     store.isPublic = isPublic.value
     store.update().then(() => {
         showForm.value = false
-        console.log(store.isPublic)
     }).catch((e) => {
         error.value = e as string
     }).finally(() => {

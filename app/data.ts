@@ -22,9 +22,11 @@ export const not_authenticated_menu: IMenuBlock[] = [
 export const authenticated_menu: IMenuBlock[] = [
   {
     title: 'Saved programs',
+    icon: '<3',
     items: []
   },{
     title: 'Account',
+    icon: '<3',
     items: [{
       link: '/profile',
       text: 'Profile'
@@ -35,6 +37,7 @@ export const authenticated_menu: IMenuBlock[] = [
 export const code_menu: IMenuBlock[] = [
   {
     title: 'Esolangs',
+    icon: '<>',
     items: [{
       link: '/?new=1',
       text: 'Brainfuck',

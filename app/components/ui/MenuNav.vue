@@ -2,7 +2,10 @@
  <nav class="px-10">
     <ul>
         <li v-for="(menuBlock, i) in menuList as IMenuBlock[]" :key="i" class="pt-[44px]">
-        <p class="text-green-300">{{ menuBlock.title }}</p>
+        <p class="">
+            <span v-if="menuBlock.icon" class="text-green-300 mr-2">{{ menuBlock.icon }}</span>
+            <span :class="!menuBlock.icon && 'text-green-300'">{{ menuBlock.title }}</span>
+        </p>
         <ul>
             <li v-for="(menuItem, j) in menuBlock.items" :key="j" class="w-full border-b border-purple-300">
             <nuxt-link :to="menuItem.link" @click="store.closeMenus" class="py-4 w-full flex justify-between gap-[10px] items-baseline">
