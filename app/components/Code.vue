@@ -37,6 +37,7 @@
     const ui = useUiStore()
     const showAsciiChart = ref(false)
     const pasteListener = ref()
+    const selectionListener = ref()
 
     const textarea = useTemplateRef('textareaRef')
     const selectionStart = ref(0)
@@ -49,8 +50,6 @@
     defineEmits(['goToRun'])
 
     const handleInput = (e: InputEvent) => {
-        selectionStart.value = textarea.value!.selectionStart
-        selectionEnd.value = textarea.value!.selectionEnd
         store.parseCode()
         lastV.value++
     }
@@ -71,13 +70,13 @@
         let char = '';
         const start = selectionStart.value
         const end = selectionEnd.value
-        
         switch (key) {
             case 'del':
-                if (store.code && start === end && end === store.code.length) {
-                    store.code = store.code.slice(0, start - 1)
+                const singleDel = start === end;
+                if (store.code && end === store.code.length) {
+                    store.code = store.code.slice(0, start - (singleDel ? 1 : 0))
                 } else if (store.code) {
-                    store.code = store.code.slice(0, start) + store.code.slice(end)
+                    store.code = store.code.slice(0, start - (singleDel ? 1 : 0)) + store.code.slice(end)
                 }
             break;
             case 'SPACE':
@@ -87,9 +86,9 @@
                 char = key
             break;
         }
-        if (store.code) {
+        if (store.code && key !== 'del') {
             store.code = store.code.slice(0, start) + char + store.code.slice(end)
-        } else if (char !== 'del') {
+        } else if (key !== 'del') {
             store.code = char
         }
         store.parseCode()
@@ -97,8 +96,14 @@
         
         textarea.value!.focus()
         nextTick(() => {
-            textarea.value!.selectionStart = selectionStart.value + 1
-            textarea.value!.selectionEnd = selectionEnd.value + 1
+            if (key !== 'del') {
+                textarea.value!.selectionStart = start + 1
+                textarea.value!.selectionEnd = end + 1
+            }
+            else {
+                textarea.value!.selectionStart = end - ((end - start) || 1)
+                textarea.value!.selectionEnd = end - ((end - start) || 1)
+            }
         })
     }
 
@@ -132,11 +137,16 @@
     
     onMounted(() => {
         pasteListener.value = window.addEventListener('paste', handlePaste)
+        selectionListener.value = document.addEventListener('selectionchange', () => {
+            selectionStart.value = textarea.value?.selectionStart ?? 0
+            selectionEnd.value = textarea.value?.selectionEnd ?? 0
+        })
         // saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     })
 
     onBeforeUnmount(() => {
         window.removeEventListener('paste', pasteListener.value)
+        document.removeEventListener('selectionchange', selectionListener.value)
         clearTimeout(saveTimer.value)
     })
 
