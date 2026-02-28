@@ -36,7 +36,6 @@
     const user = useUserStore()
     const ui = useUiStore()
     const showAsciiChart = ref(false)
-    const pasteListener = ref()
     const selectionListener = ref()
 
     const textarea = useTemplateRef('textareaRef')
@@ -62,12 +61,6 @@
     const handleBlur = () => {
         selectionStart.value = textarea.value!.selectionStart
         selectionEnd.value = textarea.value!.selectionEnd
-    }
-
-    const handlePaste = (e: ClipboardEvent) => {
-        const text = e.clipboardData?.getData('text')
-        lastV.value++
-        if (text) text.split('').forEach((char, i) => store.parseChar(char, i))
     }
 
     const handleKeyboardClick = (key: string) => {
@@ -150,7 +143,6 @@
     }
     
     onMounted(() => {
-        pasteListener.value = window.addEventListener('paste', handlePaste)
         selectionListener.value = document.addEventListener('selectionchange', () => {
             selectionStart.value = textarea.value?.selectionStart ?? 0
             selectionEnd.value = textarea.value?.selectionEnd ?? 0
@@ -160,7 +152,6 @@
     })
 
     onBeforeUnmount(() => {
-        window.removeEventListener('paste', pasteListener.value)
         document.removeEventListener('selectionchange', selectionListener.value)
         clearTimeout(saveTimer.value)
     })
