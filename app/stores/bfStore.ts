@@ -11,15 +11,21 @@ export const useBfStore = defineStore('bf', {
     actions: {
         parseCode() {
             this.codeHtml = []
+            if (!this.code) return
+
             this.code?.split('').forEach((char, i) => {
                 this.parseChar(char, i)
             })
+
+            // edge case when string ends with \n, renders badly in <code>
+            if (this.code.charCodeAt(this.code.length - 1) === 10) 
+                this.codeHtml.push('&nbsp;')
         },
         parseChar(char: string, index: number) {
             const charId = `t${index}`
             switch (char) {
                 case '\n':
-                    this.codeHtml.push('<br>');
+                    this.codeHtml.push('<br/>');
                 break;
                 case ' ':
                     this.codeHtml.push('&nbsp;');
