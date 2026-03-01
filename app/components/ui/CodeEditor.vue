@@ -44,9 +44,6 @@ const selectionListener = ref()
 
 const handleInput = () => {
     $emit('input')
-    nextTick(() => {
-        updateCodeEditorHeight()
-    })
 }
 
 const handleBlur = () => {
@@ -58,7 +55,7 @@ const updateCodeEditorHeight = () => {
     if (!textarea.value || !codeEditorElement.value || !codeElement.value)
         return;
     const height = codeElement.value.offsetHeight
-    const containerHeight = codeEditorElement.value.offsetHeight-2
+    const containerHeight = codeEditorElement.value.clientHeight-2
     textarea.value.style.height = `${Math.max(containerHeight, height)}px`
 }
 
@@ -74,6 +71,9 @@ watch(selectionEnd, (val) => {
 
 watch(code, () => {
     textarea.value!.focus()
+    nextTick(() => {
+        updateCodeEditorHeight()
+    })
 })
 
 onMounted(() => {
@@ -81,7 +81,10 @@ onMounted(() => {
         selectionStart.value = textarea.value?.selectionStart ?? 0
         selectionEnd.value = textarea.value?.selectionEnd ?? 0
     })
-    updateCodeEditorHeight()
+    codeEditorElement.value!.style.height = `${codeEditorElement.value!.clientHeight}px`
+    nextTick(() => {
+        updateCodeEditorHeight()
+    })
 })
 
 onBeforeUnmount(() => {
