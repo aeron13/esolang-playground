@@ -1,19 +1,12 @@
 <template>
     <div class="w-full h-full flex flex-col">
-        <div ref="codeEditorRef" class="relative bg-dark-900 w-full flex-grow rounded-sm max-h-[52vh] overflow-scroll">
-            <textarea
-                autofocus="true"
-                inputmode="none"
-                ref="textareaRef"
-                class="p-2 absolute w-full h-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none overflow-hidden" 
-                v-model="store.code" 
-                @blur="handleBlur"
-                @input.prevent="handleInput" 
-            ></textarea>
-            <code ref="codeRef" class="p-2 z-1 relative pointer-events-none w-full font-semibold h-fit text-base inline-block font-sans tracking-wider">
-                <span v-html="store.codeHtml.join('')"></span>
-            </code>
-        </div>
+        <UiCodeEditor 
+            @input="handleInput" 
+            v-model:code="store.code"
+            v-model:code-html="store.codeHtml"
+            v-model:selection-start="selectionStart"
+            v-model:selection-end="selectionEnd"
+        />
         <div class="flex justify-between items-center pt-4 px-5 pb-3">
             <UiUnderlineButton @click="showAsciiChart = true">ascii chart</UiUnderlineButton>
             <div>
@@ -36,11 +29,7 @@
     const user = useUserStore()
     const ui = useUiStore()
     const showAsciiChart = ref(false)
-    const selectionListener = ref()
 
-    const textarea = useTemplateRef('textareaRef')
-    const codeElement = useTemplateRef('codeRef')
-    const codeEditorElement = useTemplateRef('codeEditorRef')
     const selectionStart = ref(0)
     const selectionEnd = ref(0)
     const saveTimer = ref()
@@ -50,17 +39,13 @@
 
     defineEmits(['goToRun'])
 
-    const handleInput = (e: InputEvent) => {
+    const updateCode = () => {
         store.parseCode()
         lastV.value++
-        nextTick(() => {
-            updateCodeEditorHeight()
-        })
     }
 
-    const handleBlur = () => {
-        selectionStart.value = textarea.value!.selectionStart
-        selectionEnd.value = textarea.value!.selectionEnd
+    const handleInput = () => {
+        updateCode()
     }
 
     const handleKeyboardClick = (key: string) => {
@@ -89,20 +74,18 @@
         } else if (key !== 'del') {
             store.code = char
         }
-        store.parseCode()
-        lastV.value++
+
+        updateCode()
         
-        textarea.value!.focus()
         nextTick(() => {
             if (key !== 'del') {
-                textarea.value!.selectionStart = start + 1
-                textarea.value!.selectionEnd = end + 1
+                selectionStart.value = start + 1
+                selectionEnd.value = end + 1
             }
             else {
-                textarea.value!.selectionStart = end - ((end - start) || 1)
-                textarea.value!.selectionEnd = end - ((end - start) || 1)
+                selectionStart.value = end - ((end - start) || 1)
+                selectionEnd.value = end - ((end - start) || 1)
             }
-            updateCodeEditorHeight()
         })
     }
 
@@ -133,27 +116,13 @@
         store.saveOrUpdate()
         saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     }
-
-    const updateCodeEditorHeight = () => {
-        if (!textarea.value || !codeEditorElement.value || !codeElement.value)
-            return;
-        const height = codeElement.value.offsetHeight
-        const containerHeight = codeEditorElement.value.offsetHeight-2
-        textarea.value.style.height = `${Math.max(containerHeight, height)}px`
-    }
     
     onMounted(() => {
-        selectionListener.value = document.addEventListener('selectionchange', () => {
-            selectionStart.value = textarea.value?.selectionStart ?? 0
-            selectionEnd.value = textarea.value?.selectionEnd ?? 0
-        })
-        updateCodeEditorHeight()
         // saveTimer.value = setTimeout(() => {saveOnInterval(lastV.value)}, 5000)
     })
 
     onBeforeUnmount(() => {
-        document.removeEventListener('selectionchange', selectionListener.value)
-        clearTimeout(saveTimer.value)
+        // clearTimeout(saveTimer.value)
     })
 
 </script>

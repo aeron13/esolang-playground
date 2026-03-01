@@ -1,9 +1,11 @@
 <template>
     <div class="w-full h-full flex flex-col">
-        <div class="bg-dark-900/50 w-full min-h-[180px] flex-grow rounded-sm p-2 overflow-scroll">
-            <code ref="code-ref" v-html="store.codeHtml?.join('')" class="font-semibold text-base inline-block font-sans tracking-wider">
-            </code>
-        </div>
+        <UiCodeEditor
+            ref="code-ref"
+            v-model:code="store.code" 
+            v-model:code-html="store.codeHtml"
+            :editable="false"
+        />
         <div class="px-5 py-4">
             <div class="mt-1">
                 <UiInputField class="flex items-baseline gap-3" label="Input" name="input" v-model="store.input"></UiInputField>
@@ -123,8 +125,8 @@ const runCode = async () => {
 }
 
 const runStep = async () => {
-    codeRef.value?.querySelector(`.active`)?.classList.remove('active')
-    codeRef.value?.querySelector(`#t${pointer.value}`)?.classList.add('active')
+    codeRef.value?.$el.querySelector(`.active`)?.classList.remove('active')
+    codeRef.value?.$el.querySelector(`#t${pointer.value}`)?.classList.add('active')
     const { next } = compiler.value!.runNextChar()
     memory.value = [...compiler.value!.memory]
     memoryPointer.value = compiler.value!.memoryPointer
