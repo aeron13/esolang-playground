@@ -1,10 +1,17 @@
 <template>
-    <div ref="codeEditorRef" class="relative bg-dark-900 w-full flex-grow rounded-sm max-h-[52vh] overflow-scroll">
+    <div 
+        ref="codeEditorRef" 
+        class="relative w-full flex-grow rounded-sm max-h-[52vh] overflow-scroll" 
+        :class="editable ? 'bg-dark-900' : 'bg-dark-900/50'"
+        @click="textarea?.focus()"
+    >
         <textarea
+            name="code-editor"
+            v-show="editable"
             autofocus="true"
             inputmode="none"
             ref="textareaRef"
-            class="p-2 absolute w-full h-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none overflow-hidden" 
+            class="p-2 absolute w-full bg-transparent font-semibold text-base font-sans tracking-wider focus:outline-none focus-visible:outline-none overflow-hidden" 
             v-model="code" 
             @blur="handleBlur"
             @input.prevent="handleInput" 
@@ -16,7 +23,14 @@
 </template>
 <script setup lang="ts">
 
-const $emit = defineEmits(['input','blur'])
+const $emit = defineEmits(['input'])
+
+const props = defineProps({
+    editable: {
+        type: Boolean,
+        default: true
+    }
+})
 
 const code = defineModel<string>('code')
 const codeHtml = defineModel<string[]>('codeHtml')
